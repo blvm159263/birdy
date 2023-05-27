@@ -24,9 +24,6 @@ public class User {
     @Column(name = "id", nullable = false, updatable = false)
     private Integer id;
 
-    @Column(name = "user_name", length = 50, nullable = false)
-    private String userName;
-
     @Column(name = "password", nullable = false)
     private String password;
 
@@ -56,10 +53,6 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @OneToOne(mappedBy = "userShop")
-    @JsonBackReference
-    private Shop shop;
-
     @OneToMany(mappedBy = "userAddress",fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Address> addressList;
@@ -67,5 +60,9 @@ public class User {
     @OneToMany(mappedBy = "userOrder",fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Order> orderList;
+
+    @OneToMany(mappedBy = "userPaymentMethod", fetch = FetchType.LAZY)
+    @JsonBackReference
+    private List<PaymentMethod> paymentMethodList;
 
 }

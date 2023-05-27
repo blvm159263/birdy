@@ -16,6 +16,12 @@ public class OrderDetailDTO {
 
     private Double price;
 
+    private Integer rating;
+
+    private String comment;
+
+    private Boolean status;
+
     private Integer productId;
 
     private String productName;

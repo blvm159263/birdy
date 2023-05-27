@@ -26,7 +26,7 @@ public class OrderDTO {
 
     private String fullName;
 
-    private Integer shopId;
+    private Integer shipmentId;
 
-    private String shopName;
+    private String shipmentTypeName;
 }

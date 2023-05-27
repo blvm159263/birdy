@@ -1,5 +1,6 @@
 package com.newbies.birdy.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -38,12 +40,26 @@ public class Order {
     private Boolean status;
 
     @ManyToOne
+    @JoinColumn(name = "shipment_id")
+    @JsonManagedReference
+    private Shipment shipmentOrder;
+
+    @ManyToOne
     @JsonManagedReference
     @JoinColumn(name = "user_id", nullable = false)
     private User userOrder;
 
-    @ManyToOne
-    @JsonManagedReference
-    @JoinColumn(name = "shop_id", nullable = false)
-    private Shop shopOrder;
+    @OneToMany(mappedBy = "orderStatusDetail", fetch = FetchType.LAZY)
+    @JsonBackReference
+    private List<OrderStatusDetail> orderStatusDetailList;
+
+    @OneToMany(mappedBy = "orderInvoice", fetch = FetchType.LAZY)
+    @JsonBackReference
+    private List<Invoice> invoiceList;
+
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    @JsonBackReference
+    private List<OrderDetail> orderDetailList;
+
+
 }

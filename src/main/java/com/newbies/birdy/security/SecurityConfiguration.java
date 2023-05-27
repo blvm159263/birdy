@@ -21,7 +21,7 @@ public class SecurityConfiguration {
                 .cors().and().csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/**").permitAll()
-                .requestMatchers("swagger-ui/**").permitAll()
+                .requestMatchers("swagger-ui/**", "/v3/api-docs/**").permitAll()
 //                 .requestMatchers("/api/admin/**").hasAnyAuthority("role_admin")
                  .anyRequest().authenticated()
                 .and()
@@ -33,4 +33,6 @@ public class SecurityConfiguration {
 
         return http.build();
     }
+
+
 }

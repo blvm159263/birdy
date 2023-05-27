@@ -2,13 +2,13 @@ package com.newbies.birdy.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -24,6 +24,12 @@ public class Shop {
     @Column(name = "id", nullable = false, updatable = false)
     private Integer id;
 
+    @Column(name = "phone_number", nullable = false)
+    private String phoneNumber;
+
+    @Column(name = "password", nullable = false)
+    private String password;
+
     @Column(name = "shop_name", nullable = false)
     private String shopName;
 
@@ -33,24 +39,21 @@ public class Shop {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
+    @Column(name = "create_Date", nullable = false)
+    private Date createDate;
+
     @Column(name = "status", nullable = false)
     private Boolean status;
-
-    @OneToOne
-    @JsonManagedReference
-    @JoinColumn(name = "user_id", nullable = false)
-    private User userShop;
 
     @OneToMany(mappedBy = "shopProduct", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Product> productList;
 
-    @OneToMany(mappedBy = "shopOrder", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "shopShipment", fetch = FetchType.LAZY)
     @JsonBackReference
-    private List<Order> orderList;
+    private List<Shipment> shipmentList;
 
-    @OneToMany(mappedBy = "shopReply", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "shopInvoice", fetch = FetchType.LAZY)
     @JsonBackReference
-    private List<ShopReply> shopReplyList;
-
+    private List<Invoice> invoiceList;
 }

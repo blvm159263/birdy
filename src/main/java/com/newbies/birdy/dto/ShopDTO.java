@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -11,14 +13,18 @@ public class ShopDTO {
 
     private Integer id;
 
+    private String phoneNumber;
+
+    private String password;
+
     private String shopName;
 
     private String address;
 
     private String avatarUrl;
 
-    private Boolean status;
+    private Date createDate;
 
-    private Integer userId;
+    private Boolean status;
 
 }

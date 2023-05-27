@@ -1,6 +1,5 @@
 package com.newbies.birdy.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,6 +25,16 @@ public class OrderDetail {
 
     @Column(name = "price", nullable = false)
     private Double price;
+
+    @Column(name = "rating", nullable = false)
+    private Integer rating;
+
+    @Column(name = "comment")
+    private String comment;
+
+    @Column(name = "status")
+    private Boolean status;
+
     @ManyToOne
     @JsonManagedReference
     @JoinColumn(name = "product_id", nullable = false)
@@ -36,7 +45,4 @@ public class OrderDetail {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @OneToOne(mappedBy = "orderDetail")
-    @JsonBackReference
-    private Review review;
 }

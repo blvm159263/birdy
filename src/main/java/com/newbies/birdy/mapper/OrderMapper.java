@@ -2,7 +2,7 @@ package com.newbies.birdy.mapper;
 
 import com.newbies.birdy.dto.OrderDTO;
 import com.newbies.birdy.entities.Order;
-import com.newbies.birdy.entities.Shop;
+import com.newbies.birdy.entities.Shipment;
 import com.newbies.birdy.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,14 +14,17 @@ public interface OrderMapper {
 
     OrderMapper INSTANCE = Mappers.getMapper(OrderMapper.class);
 
+    @Mapping(target = "shipmentTypeName", source = "shipmentOrder.shipmentType.shipmentTypeName")
+    @Mapping(target = "shipmentId", source = "shipmentOrder.id")
     @Mapping(target = "userId", source = "userOrder.id")
-    @Mapping(target = "shopName", source = "shopOrder.shopName")
-    @Mapping(target = "shopId", source = "shopOrder.id")
     @Mapping(target = "fullName", source = "userOrder.fullName")
     OrderDTO toDTO(Order order);
 
+    @Mapping(target = "orderStatusDetailList", ignore = true)
+    @Mapping(target = "orderDetailList", ignore = true)
+    @Mapping(target = "invoiceList", ignore = true)
+    @Mapping(target = "shipmentOrder", source = "shipmentId", qualifiedByName = "mapShipment")
     @Mapping(target = "userOrder", source = "userId", qualifiedByName = "mapUser")
-    @Mapping(target = "shopOrder", source = "shopId", qualifiedByName = "mapShop")
     Order toEntity(OrderDTO dto);
 
     @Named("mapUser")
@@ -31,10 +34,11 @@ public interface OrderMapper {
         return user;
     }
 
-    @Named("mapShop")
-    default Shop mapShop(Integer id) {
-        Shop shop = new Shop();
-        shop.setId(id);
-        return shop;
+    @Named("mapShipment")
+    default Shipment mapShipment(Integer id) {
+        Shipment s = new Shipment();
+        s.setId(id);
+        return s;
     }
+
 }

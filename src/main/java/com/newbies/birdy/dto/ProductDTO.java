@@ -24,6 +24,28 @@ public class ProductDTO {
 
     private Date createDate;
 
+    private String species;
+
+    private String age;
+
+    private Integer gender;
+
+    private String color;
+
+    private Date expDate;
+
+    private String madeIn;
+
+    private Double weight;
+
+    private String size;
+
+    private String material;
+
+    private String description;
+
+    private String brandName;
+
     private Integer state;
 
     private Boolean status;

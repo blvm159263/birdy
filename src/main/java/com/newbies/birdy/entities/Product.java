@@ -42,6 +42,39 @@ public class Product {
     @Column(name = "create_date", nullable = false)
     private Date createDate;
 
+    @Column(name = "species", length = 50)
+    private String species;
+
+    @Column(name = "age")
+    private String age;
+
+    @Column(name = "gender")
+    private Integer gender;
+
+    @Column(name = "color", length = 20)
+    private String color;
+
+    @Column(name = "exp_date")
+    private Date expDate;
+
+    @Column(name = "made_in", length = 50)
+    private String madeIn;
+
+    @Column(name = "weight")
+    private Double weight;
+
+    @Column(name = "size", length = 20)
+    private String size;
+
+    @Column(name = "material", length = 20)
+    private String material;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "brand_name", length = 20)
+    private String brandName;
+
     @Column(name = "state", nullable = false)
     private Integer state;
 
@@ -61,10 +94,6 @@ public class Product {
     @OneToMany(mappedBy = "productImg", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<ProductImage> productImageList;
-
-    @OneToOne(mappedBy = "productDetail")
-    @JsonBackReference
-    private ProductDetail productDetail;
 
     @OneToMany(mappedBy = "productOrderDetail", fetch = FetchType.LAZY)
     @JsonBackReference
