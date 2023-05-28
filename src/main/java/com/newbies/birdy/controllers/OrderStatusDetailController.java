@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/order-status-detail")
+@RequestMapping("api/v1/order-status-details")
 public class OrderStatusDetailController {
 }

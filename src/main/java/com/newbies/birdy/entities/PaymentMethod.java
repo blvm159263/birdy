@@ -23,7 +23,7 @@ public class PaymentMethod {
     @Column(name = "id", nullable = false, updatable = false)
     private Integer id;
 
-    @Column(name = "payment_number", nullable = false)
+    @Column(name = "payment_number",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", nullable = false)
     private String paymentNumber;
 
     @Column(name = "status", nullable = false)
@@ -41,5 +41,5 @@ public class PaymentMethod {
 
     @OneToMany(mappedBy = "paymentMethod", fetch = FetchType.LAZY)
     @JsonBackReference
-    private List<Invoice> invoiceList;
+    private List<Order> orderList;
 }

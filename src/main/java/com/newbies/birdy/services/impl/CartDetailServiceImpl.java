@@ -1,6 +1,6 @@
 package com.newbies.birdy.services.impl;
 
-import com.newbies.birdy.services.InvoiceService;
+import com.newbies.birdy.services.CartDetailService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -8,5 +8,5 @@ import org.springframework.stereotype.Service;
 @Transactional
 @Service
 @RequiredArgsConstructor
-public class InvoiceServiceImpl implements InvoiceService {
+public class CartDetailServiceImpl implements CartDetailService {
 }

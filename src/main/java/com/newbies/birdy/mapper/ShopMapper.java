@@ -14,7 +14,6 @@ public interface ShopMapper {
     ShopDTO toDTO(Shop shop);
 
     @Mapping(target = "shipmentList", ignore = true)
-    @Mapping(target = "invoiceList", ignore = true)
     @Mapping(target = "productList", ignore = true)
     Shop toEntity(ShopDTO dto);
 

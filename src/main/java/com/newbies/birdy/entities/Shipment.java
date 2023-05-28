@@ -42,4 +42,5 @@ public class Shipment {
     @OneToMany(mappedBy = "shipmentOrder", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Order> orderList;
+
 }

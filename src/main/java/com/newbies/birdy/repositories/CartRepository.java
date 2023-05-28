@@ -1,9 +1,9 @@
 package com.newbies.birdy.repositories;
 
-import com.newbies.birdy.entities.InvoiceStatus;
+import com.newbies.birdy.entities.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface InvoiceStatusRepository extends JpaRepository<InvoiceStatus, Integer> {
+public interface CartRepository extends JpaRepository<Cart, Integer> {
 }

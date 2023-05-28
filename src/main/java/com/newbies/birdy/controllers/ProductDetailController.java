@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/product-detail")
+@RequestMapping("api/v1/product-details")
 public class ProductDetailController {
 }

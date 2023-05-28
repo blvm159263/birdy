@@ -14,22 +14,21 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_invoice_status")
-public class InvoiceStatus {
+@Table(name = "tbl_payment_status")
+public class PaymentStatus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
     private Integer id;
 
-    @Column(name = "invoice_status_name", nullable = false)
-    private String invoiceStatusName;
+    @Column(name = "payment_status_name",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", nullable = false)
+    private String paymentStatusName;
 
     @Column(name = "status", nullable = false)
     private Boolean status;
 
-    @OneToMany(mappedBy = "invoiceStatus", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "paymentStatus", fetch = FetchType.LAZY)
     @JsonBackReference
-    private List<Invoice> invoiceList;
+    private List<Order> orderList;
 }
-

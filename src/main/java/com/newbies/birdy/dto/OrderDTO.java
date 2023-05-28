@@ -22,11 +22,17 @@ public class OrderDTO {
 
     private Boolean status;
 
-    private Integer userId;
-
-    private String fullName;
-
     private Integer shipmentId;
 
     private String shipmentTypeName;
+
+    private Integer paymentMethodId;
+
+    private String paymentTypeName;
+
+    private Integer orderParentId;
+
+    private Integer paymentStatusId;
+
+    private String paymentStatusName;
 }

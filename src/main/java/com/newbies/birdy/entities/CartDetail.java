@@ -12,28 +12,27 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_order_status_detail")
-public class OrderStatusDetail {
+@Table(name = "tbl_cart_detail")
+public class CartDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
     private Integer id;
 
-    @Column(name = "comment",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", nullable = false)
-    private String comment;
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
 
-    @Column(name = "status", nullable = false)
-    private Boolean status;
-
-    @ManyToOne
-    @JoinColumn(name = "order_status_id")
-    @JsonManagedReference
-    private OrderStatus orderStatus;
+    @Column(name = "price", nullable = false)
+    private Double price;
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "cart_id")
     @JsonManagedReference
-    private Order orderStatusDetail;
+    private Cart cart;
 
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    @JsonManagedReference
+    private Product productCartDetail;
 }

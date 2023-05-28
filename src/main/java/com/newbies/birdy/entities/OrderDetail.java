@@ -29,7 +29,7 @@ public class OrderDetail {
     @Column(name = "rating", nullable = false)
     private Integer rating;
 
-    @Column(name = "comment")
+    @Column(name = "comment",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
     private String comment;
 
     @Column(name = "status")

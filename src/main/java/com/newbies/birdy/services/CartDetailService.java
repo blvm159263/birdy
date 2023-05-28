@@ -1,4 +1,4 @@
 package com.newbies.birdy.services;
 
-public interface InvoiceService {
+public interface CartDetailService {
 }

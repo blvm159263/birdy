@@ -22,7 +22,7 @@ public class Category {
     @Column(name = "id", nullable = false, updatable = false)
     private Integer id;
 
-    @Column(name = "category_name", nullable = false)
+    @Column(name = "category_name",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", nullable = false)
     private String categoryName;
 
     @Column(name = "status", nullable = false)

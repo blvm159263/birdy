@@ -7,8 +7,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InvoiceStatusDTO {
+public class CartDTO {
+
     private Integer id;
-    private String invoiceStatusName;
-    private Boolean status;
+
+    private Integer userId;
+
+    private String fullName;
+
+    private String session;
 }

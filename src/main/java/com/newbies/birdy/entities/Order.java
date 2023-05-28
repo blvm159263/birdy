@@ -24,7 +24,7 @@ public class Order {
     @Column(name = "id", nullable = false, updatable = false)
     private Integer id;
 
-    @Column(name = "code", length = 20, nullable = false)
+    @Column(name = "code",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", length = 20, nullable = false)
     private String code;
 
     @Column(name = "create_date", nullable = false)
@@ -33,29 +33,40 @@ public class Order {
     @Column(name = "state", nullable = false)
     private Integer state;
 
-    @Column(name = "comment")
+    @Column(name = "comment",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
     private String comment;
 
     @Column(name = "status", nullable = false)
     private Boolean status;
 
     @ManyToOne
-    @JoinColumn(name = "shipment_id")
+    @JoinColumn(name = "shipment_id", nullable = false)
     @JsonManagedReference
     private Shipment shipmentOrder;
 
     @ManyToOne
+    @JoinColumn(name = "payment_method_id", nullable = false)
     @JsonManagedReference
-    @JoinColumn(name = "user_id", nullable = false)
-    private User userOrder;
+    private PaymentMethod paymentMethod;
+
+
+    @ManyToOne()
+    @JoinColumn(name = "order_parent_id")
+    @JsonManagedReference
+    private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "payment_status_id", nullable = false)
+    @JsonManagedReference
+    private PaymentStatus paymentStatus;
+
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    @JsonBackReference
+    private List<Order> orderList;
 
     @OneToMany(mappedBy = "orderStatusDetail", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<OrderStatusDetail> orderStatusDetailList;
-
-    @OneToMany(mappedBy = "orderInvoice", fetch = FetchType.LAZY)
-    @JsonBackReference
-    private List<Invoice> invoiceList;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     @JsonBackReference

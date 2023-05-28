@@ -27,13 +27,13 @@ public class Shop {
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", nullable = false)
     private String password;
 
-    @Column(name = "shop_name", nullable = false)
+    @Column(name = "shop_name",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", nullable = false)
     private String shopName;
 
-    @Column(name = "address", nullable = false)
+    @Column(name = "address",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", nullable = false)
     private String address;
 
     @Column(name = "avatar_url")
@@ -53,7 +53,4 @@ public class Shop {
     @JsonBackReference
     private List<Shipment> shipmentList;
 
-    @OneToMany(mappedBy = "shopInvoice", fetch = FetchType.LAZY)
-    @JsonBackReference
-    private List<Invoice> invoiceList;
 }

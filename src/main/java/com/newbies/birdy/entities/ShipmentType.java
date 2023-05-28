@@ -22,7 +22,7 @@ public class ShipmentType {
     @Column(name = "id", nullable = false, updatable = false)
     private Integer id;
 
-    @Column(name = "shipment_type_name", nullable = false)
+    @Column(name = "shipment_type_name",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", nullable = false)
     private String shipmentTypeName;
 
     @Column(name = "status", nullable = false)

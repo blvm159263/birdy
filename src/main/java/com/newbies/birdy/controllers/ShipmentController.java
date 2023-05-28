@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/shipment")
+@RequestMapping("api/v1/shipments")
 public class ShipmentController {
 }

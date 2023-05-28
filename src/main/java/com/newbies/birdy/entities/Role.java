@@ -22,7 +22,7 @@ public class Role {
     @Column(name = "id", nullable = false, updatable = false)
     private Integer id;
 
-    @Column(name = "role_name", length = 20, nullable = false)
+    @Column(name = "role_name",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", length = 20, nullable = false)
     private String roleName;
 
     @Column(name = "status", nullable = false)

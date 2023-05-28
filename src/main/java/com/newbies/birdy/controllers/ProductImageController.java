@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/product-image")
+@RequestMapping("api/v1/product-images")
 public class ProductImageController {
 }

@@ -20,16 +20,16 @@ public class Address {
     @Column(name = "id", nullable = false, updatable = false)
     private Integer id;
 
-    @Column(name = "address", nullable = false)
+    @Column(name = "address",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", nullable = false)
     private String address;
 
-    @Column(name = "ward", length = 50, nullable = false)
+    @Column(name = "ward",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", length = 50, nullable = false)
     private String ward;
 
-    @Column(name = "city", length = 50, nullable = false)
+    @Column(name = "city",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", length = 50, nullable = false)
     private String city;
 
-    @Column(name = "province", length = 50, nullable = false)
+    @Column(name = "province",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", length = 50, nullable = false)
     private String province;
 
     @Column(name = "isDefault", nullable = false)

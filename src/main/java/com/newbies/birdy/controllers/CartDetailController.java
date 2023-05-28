@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/invoice")
-public class InvoiceController {
+@RequestMapping("api/v1/cart-details")
+public class CartDetailController {
 }

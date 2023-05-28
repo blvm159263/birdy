@@ -27,7 +27,7 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "full_name", length = 50, nullable = false)
+    @Column(name = "full_name",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", length = 50, nullable = false)
     private String fullName;
 
     @Column(name = "phone_number", length = 20, nullable = false)
@@ -57,12 +57,12 @@ public class User {
     @JsonBackReference
     private List<Address> addressList;
 
-    @OneToMany(mappedBy = "userOrder",fetch = FetchType.LAZY)
-    @JsonBackReference
-    private List<Order> orderList;
-
     @OneToMany(mappedBy = "userPaymentMethod", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<PaymentMethod> paymentMethodList;
+
+    @OneToMany(mappedBy = "userCart",fetch = FetchType.LAZY)
+    @JsonBackReference
+    private List<Cart> cartList;
 
 }

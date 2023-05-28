@@ -17,8 +17,8 @@ public interface UserMapper {
     @Mapping(target = "roleId", source = "role.roleName")
     UserDTO toDTO(User user);
 
+    @Mapping(target = "cartList", ignore = true)
     @Mapping(target = "paymentMethodList", ignore = true)
-    @Mapping(target = "orderList", ignore = true)
     @Mapping(target = "addressList", ignore = true)
     @Mapping(target = "role", source = "roleId", qualifiedByName = "mapRole")
     User toEntity(UserDTO dto);
