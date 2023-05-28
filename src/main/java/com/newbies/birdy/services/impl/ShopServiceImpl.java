@@ -21,12 +21,18 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public List<ShopDTO> listByShopName(String name, Boolean status) {
-        List<Shop> shopList = shopRepository.findByShopNameContainingAndStatus(name, true);
+        List<Shop> shopList = shopRepository.findByShopNameContainingAndStatus(name, status);
         return shopList.stream().map(ShopMapper.INSTANCE::toDTO).toList();
     }
 
     @Override
     public ShopDTO getShopById(Integer id) {
         return ShopMapper.INSTANCE.toDTO(shopRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("ID shop not found")));
+    }
+
+    @Override
+    public List<ShopDTO> listAllShop(Boolean status) {
+        List<Shop> shopList = shopRepository.findByStatus(status);
+        return shopList.stream().map(ShopMapper.INSTANCE::toDTO).toList();
     }
 }

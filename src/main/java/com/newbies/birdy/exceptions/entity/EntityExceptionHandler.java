@@ -17,7 +17,7 @@ public class EntityExceptionHandler {
         EntityException exception = new EntityException(
                 e.getMessage(),
                 notFound,
-                ZonedDateTime.now(ZoneId.of("VST"))
+                ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"))
         );
         return new ResponseEntity<>(exception, notFound);
     }

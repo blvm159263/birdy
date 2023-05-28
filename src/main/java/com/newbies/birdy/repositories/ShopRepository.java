@@ -10,4 +10,6 @@ import java.util.List;
 public interface ShopRepository extends JpaRepository<Shop, Integer> {
 
     List<Shop> findByShopNameContainingAndStatus(String name, Boolean status);
+
+    List<Shop> findByStatus(Boolean status);
 }

@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import java.time.ZonedDateTime;
 
 public class EntityException extends ObjectException {
-    public EntityException(String message, HttpStatus httpStatus, ZonedDateTime timestamp) {
-        super(message, httpStatus, timestamp);
+    public EntityException(String message, HttpStatus httpStatus, ZonedDateTime timeZone) {
+        super(message, httpStatus, timeZone);
     }
 }

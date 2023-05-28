@@ -9,4 +9,6 @@ public interface ShopService {
     List<ShopDTO> listByShopName(String name, Boolean status);
 
     ShopDTO getShopById(Integer id);
+
+    List<ShopDTO> listAllShop(Boolean status);
 }
