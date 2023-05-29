@@ -13,8 +13,6 @@ public class ShipmentDTO {
 
     private Double pricePerKm;
 
-    private Boolean status;
-
     private Integer shopId;
 
     private String shopName;

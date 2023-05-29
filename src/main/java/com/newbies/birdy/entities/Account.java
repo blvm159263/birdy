@@ -7,28 +7,33 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_order_status")
-public class OrderStatus {
+@Table(name = "tbl_account")
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
     private Integer id;
 
-    @Column(name = "order_status_name",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", nullable = false)
-    private String orderStatusName;
+    @Column(name = "product_name", nullable = false)
+    private String phoneNumber;
+
+    @Column(name = "password", nullable = false)
+    private String password;
 
     @Column(name = "status", nullable = false)
     private Boolean status;
 
-    @OneToMany(mappedBy = "orderStatus", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "accountUser")
     @JsonBackReference
-    private List<OrderStatusDetail> orderStatusDetailList;
+    private User user;
+
+    @OneToOne(mappedBy = "accountShop")
+    @JsonBackReference
+    private Shop shop;
 }

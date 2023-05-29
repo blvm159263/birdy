@@ -27,11 +27,6 @@ public class OrderStatusDetail {
     private Boolean status;
 
     @ManyToOne
-    @JoinColumn(name = "order_status_id")
-    @JsonManagedReference
-    private OrderStatus orderStatus;
-
-    @ManyToOne
     @JoinColumn(name = "order_id")
     @JsonManagedReference
     private Order orderStatusDetail;

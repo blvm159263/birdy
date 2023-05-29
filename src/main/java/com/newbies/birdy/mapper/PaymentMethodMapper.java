@@ -20,6 +20,7 @@ public interface PaymentMethodMapper {
     @Mapping(target = "fullName", source = "userPaymentMethod.fullName")
     PaymentMethodDTO toDTO(PaymentMethod paymentMethod);
 
+    @Mapping(target = "status", ignore = true)
     @Mapping(target = "orderList", ignore = true)
     @Mapping(target = "userPaymentMethod", source = "userId", qualifiedByName = "mapUser")
     @Mapping(target = "paymentType", source = "paymentTypeId", qualifiedByName = "mapPaymentType")

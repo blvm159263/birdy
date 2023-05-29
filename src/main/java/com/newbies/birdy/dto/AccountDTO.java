@@ -7,13 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartDTO {
+public class AccountDTO {
 
     private Integer id;
 
-    private Integer userId;
+    private String phoneNumber;
 
-    private String fullName;
-
-    private String session;
+    private String password;
 }

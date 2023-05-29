@@ -1,7 +1,7 @@
 package com.newbies.birdy.mapper;
 
 import com.newbies.birdy.dto.UserDTO;
-import com.newbies.birdy.entities.Role;
+import com.newbies.birdy.entities.Account;
 import com.newbies.birdy.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -13,20 +13,20 @@ public interface UserMapper {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    @Mapping(target = "roleName", source = "role.id")
-    @Mapping(target = "roleId", source = "role.roleName")
+    @Mapping(target = "phoneNumber", source = "accountUser.phoneNumber")
+    @Mapping(target = "accountId", source = "accountUser.id")
     UserDTO toDTO(User user);
 
-    @Mapping(target = "cartList", ignore = true)
+    @Mapping(target = "status", ignore = true)
     @Mapping(target = "paymentMethodList", ignore = true)
     @Mapping(target = "addressList", ignore = true)
-    @Mapping(target = "role", source = "roleId", qualifiedByName = "mapRole")
+    @Mapping(target = "accountUser", source = "accountId", qualifiedByName = "mapAccount")
     User toEntity(UserDTO dto);
 
-    @Named("mapRole")
-    default Role mapRole(Integer id) {
-        Role role = new Role();
-        role.setId(id);
-        return role;
+    @Named("mapAccount")
+    default Account mapAccount(Integer id) {
+        Account a = new Account();
+        a.setId(id);
+        return a;
     }
 }

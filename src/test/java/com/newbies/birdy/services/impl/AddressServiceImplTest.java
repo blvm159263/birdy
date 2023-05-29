@@ -1,8 +1,8 @@
 package com.newbies.birdy.services.impl;
 
 import com.newbies.birdy.dto.AddressDTO;
+import com.newbies.birdy.entities.Account;
 import com.newbies.birdy.entities.Address;
-import com.newbies.birdy.entities.Role;
 import com.newbies.birdy.entities.User;
 import com.newbies.birdy.exceptions.entity.EntityNotFoundException;
 import com.newbies.birdy.mapper.AddressMapper;
@@ -35,10 +35,10 @@ class AddressServiceImplTest {
     private AddressServiceImpl addressServiceImpl;
 
 
-    User user1 = new User(1, "12345", "Bui Minh", "0765008474", "buiminh@gmail.com", new Date(),
-            1, "img", true, new Role(), null,null,null);
-    User user2 = new User(2, "12345", "Tommy", "0765014474", "tommy@gmail.com", new Date(),
-            1, "img", true, new Role(), null,null,null);
+    User user1 = new User(1, "Bui Minh", "buiminh@gmail.com", new Date(),
+            1, "img", new Date(),true, new Account(), null,null);
+    User user2 = new User(2, "Tommy", "tommy@gmail.com", new Date(),
+            1, "img",new Date(), true, new Account(), null,null);
     Address address1 = new Address(1, "22 le lai", "phuong 4", "TP. Vũng Tàu",
             "Tỉnh Bà Rịa - Vũng Tàu", true, true, null);
     Address address2 = new Address(2, "1/2/3 truong cong dinh", "phuong 8", "TP. Vũng Tàu",

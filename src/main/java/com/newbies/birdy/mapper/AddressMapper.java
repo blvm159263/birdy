@@ -18,6 +18,7 @@ public interface AddressMapper {
     @Mapping(target = "fullName", source = "userAddress.fullName")
     AddressDTO toDTO(Address address);
 
+    @Mapping(target = "status", ignore = true)
     @Mapping(target = "userAddress", source = "userId",qualifiedByName = "mapUser")
     Address toEntity(AddressDTO dto);
 

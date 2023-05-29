@@ -20,8 +20,6 @@ public class OrderDTO {
 
     private String comment;
 
-    private Boolean status;
-
     private Integer shipmentId;
 
     private String shipmentTypeName;

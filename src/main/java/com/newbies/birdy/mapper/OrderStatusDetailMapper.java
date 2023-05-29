@@ -2,7 +2,6 @@ package com.newbies.birdy.mapper;
 
 import com.newbies.birdy.dto.OrderStatusDetailDTO;
 import com.newbies.birdy.entities.Order;
-import com.newbies.birdy.entities.OrderStatus;
 import com.newbies.birdy.entities.OrderStatusDetail;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,13 +14,11 @@ public interface OrderStatusDetailMapper {
     OrderStatusDetailMapper INSTANCE = Mappers.getMapper(OrderStatusDetailMapper.class);
 
 
-    @Mapping(target = "orderStatusName", source = "orderStatus.orderStatusName")
-    @Mapping(target = "orderStatusId", source = "orderStatus.id")
     @Mapping(target = "orderId", source = "orderStatusDetail.id")
     OrderStatusDetailDTO toDTO(OrderStatusDetail orderStatusDetail);
 
+    @Mapping(target = "status", ignore = true)
     @Mapping(target = "orderStatusDetail", source = "orderId", qualifiedByName = "mapOrder")
-    @Mapping(target = "orderStatus", source = "orderStatusId", qualifiedByName = "mapOrderStatus")
     OrderStatusDetail toEntity(OrderStatusDetailDTO dto);
 
     @Named("mapOrder")
@@ -31,10 +28,4 @@ public interface OrderStatusDetailMapper {
         return order;
     }
 
-    @Named("mapOrderStatus")
-    default OrderStatus mapOrderStatus(Integer id) {
-        OrderStatus os = new OrderStatus();
-        os.setId(id);
-        return os;
-    }
 }

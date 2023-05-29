@@ -13,5 +13,4 @@ public class PaymentTypeDTO {
 
     private String paymentTypeName;
 
-    private Boolean status;
 }

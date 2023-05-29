@@ -99,9 +99,6 @@ public class Product {
     @JsonBackReference
     private List<OrderDetail> orderDetailList;
 
-    @OneToMany(mappedBy = "productCartDetail", fetch = FetchType.LAZY)
-    @JsonBackReference
-    private List<CartDetail> cartDetailList;
 
 
 }

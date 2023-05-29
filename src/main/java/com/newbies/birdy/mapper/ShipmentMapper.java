@@ -20,6 +20,7 @@ public interface ShipmentMapper {
     @Mapping(target = "shipmentTypeId", source = "shipmentType.id")
     ShipmentDTO toDTO(Shipment shipment);
 
+    @Mapping(target = "status", ignore = true)
     @Mapping(target = "orderList", ignore = true)
     @Mapping(target = "shopShipment", source = "shopId", qualifiedByName = "mapShop")
     @Mapping(target = "shipmentType", source = "shipmentTypeId", qualifiedByName = "mapShipmentType")

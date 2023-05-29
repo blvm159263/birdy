@@ -13,6 +13,4 @@ public class CategoryDTO {
 
     private String categoryName;
 
-    private Boolean status;
-
 }

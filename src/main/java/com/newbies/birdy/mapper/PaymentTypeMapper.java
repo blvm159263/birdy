@@ -13,6 +13,7 @@ public interface PaymentTypeMapper {
 
     PaymentTypeDTO toDTO(PaymentType paymentType);
 
+    @Mapping(target = "status", ignore = true)
     @Mapping(target = "paymentMethodList", ignore = true)
     PaymentType toEntity(PaymentTypeDTO dto);
 }

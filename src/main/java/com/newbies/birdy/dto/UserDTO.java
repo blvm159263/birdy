@@ -13,25 +13,21 @@ public class UserDTO {
 
     private Integer id;
 
-    private String password;
-
     private String fullName;
-
-    private String phoneNumber;
 
     private String email;
 
     private Date dob;
 
+    private Date createDate;
+
     private Integer gender;
 
     private String avatarUrl;
 
-    private Boolean status;
+    private Integer accountId;
 
-    private Integer roleId;
-
-    private String roleName;
+    private String phoneNumber;
 
 
 }

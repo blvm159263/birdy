@@ -34,8 +34,6 @@ public class ProductDetailDTO {
 
     private String brandName;
 
-    private Boolean status;
-
     private Integer productId;
 
     private String productName;

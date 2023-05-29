@@ -48,8 +48,6 @@ public class ProductDTO {
 
     private Integer state;
 
-    private Boolean status;
-
     private Integer categoryId;
 
     private String categoryName;

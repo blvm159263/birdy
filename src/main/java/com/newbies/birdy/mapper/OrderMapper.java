@@ -24,6 +24,7 @@ public interface OrderMapper {
     @Mapping(target = "shipmentId", source = "shipmentOrder.id")
     OrderDTO toDTO(Order order);
 
+    @Mapping(target = "status", ignore = true)
     @Mapping(target = "orderList", ignore = true)
     @Mapping(target = "paymentStatus", source = "paymentStatusId", qualifiedByName = "mapPaymentStatus")
     @Mapping(target = "paymentMethod", source = "paymentMethodId", qualifiedByName = "mapPaymentMethod")

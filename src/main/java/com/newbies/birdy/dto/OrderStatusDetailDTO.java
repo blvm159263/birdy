@@ -13,11 +13,5 @@ public class OrderStatusDetailDTO {
 
     private String comment;
 
-    private Boolean status;
-
-    private Integer orderStatusId;
-
-    private String orderStatusName;
-
     private String orderId;
 }

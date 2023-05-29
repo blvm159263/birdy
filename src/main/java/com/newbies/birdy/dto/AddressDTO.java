@@ -21,8 +21,6 @@ public class AddressDTO {
 
     private Boolean isDefault;
 
-    private Boolean status;
-
     private Integer userId;
 
     private String fullName;

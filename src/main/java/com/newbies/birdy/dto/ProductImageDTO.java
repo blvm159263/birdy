@@ -13,8 +13,6 @@ public class ProductImageDTO {
 
     private String imgUrl;
 
-    private Boolean status;
-
     private Integer productId;
 
     private String productName;

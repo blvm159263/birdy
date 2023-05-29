@@ -13,10 +13,6 @@ public class ShopDTO {
 
     private Integer id;
 
-    private String phoneNumber;
-
-    private String password;
-
     private String shopName;
 
     private String address;
@@ -25,6 +21,8 @@ public class ShopDTO {
 
     private Date createDate;
 
-    private Boolean status;
+    private Integer accountId;
+
+    private String phoneNumber;
 
 }

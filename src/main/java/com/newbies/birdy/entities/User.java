@@ -24,14 +24,8 @@ public class User {
     @Column(name = "id", nullable = false, updatable = false)
     private Integer id;
 
-    @Column(name = "password", nullable = false)
-    private String password;
-
     @Column(name = "full_name",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", length = 50, nullable = false)
     private String fullName;
-
-    @Column(name = "phone_number", length = 20, nullable = false)
-    private String phoneNumber;
 
     @Column(name = "email", length = 50, nullable = false)
     private String email;
@@ -45,13 +39,16 @@ public class User {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
+    @Column(name = "create_date")
+    private Date createDate;
+
     @Column(name = "status", nullable = false)
     private Boolean status;
 
-    @ManyToOne
+    @OneToOne
+    @JoinColumn(name = "account_id")
     @JsonManagedReference
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
+    private Account accountUser;
 
     @OneToMany(mappedBy = "userAddress",fetch = FetchType.LAZY)
     @JsonBackReference
@@ -61,8 +58,6 @@ public class User {
     @JsonBackReference
     private List<PaymentMethod> paymentMethodList;
 
-    @OneToMany(mappedBy = "userCart",fetch = FetchType.LAZY)
-    @JsonBackReference
-    private List<Cart> cartList;
+
 
 }

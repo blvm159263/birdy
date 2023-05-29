@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/roles")
-public class RoleController {
+@RequestMapping("api/v1/accounts")
+public class AccountController {
 }

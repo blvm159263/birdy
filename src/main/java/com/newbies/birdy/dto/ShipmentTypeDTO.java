@@ -13,5 +13,4 @@ public class ShipmentTypeDTO {
 
     private String shipmentTypeName;
 
-    private Boolean status;
 }

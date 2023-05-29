@@ -13,6 +13,7 @@ public interface ShipmentTypeMapper {
 
     ShipmentTypeDTO toDTO(ShipmentType shipmentType);
 
+    @Mapping(target = "status", ignore = true)
     @Mapping(target = "shipmentList", ignore = true)
     ShipmentType toEntity(ShipmentTypeDTO dto);
 }

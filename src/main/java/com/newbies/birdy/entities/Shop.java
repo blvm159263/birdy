@@ -2,6 +2,7 @@ package com.newbies.birdy.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,12 +25,6 @@ public class Shop {
     @Column(name = "id", nullable = false, updatable = false)
     private Integer id;
 
-    @Column(name = "phone_number", nullable = false)
-    private String phoneNumber;
-
-    @Column(name = "password",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", nullable = false)
-    private String password;
-
     @Column(name = "shop_name",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", nullable = false)
     private String shopName;
 
@@ -45,6 +40,11 @@ public class Shop {
     @Column(name = "status", nullable = false)
     private Boolean status;
 
+    @OneToOne
+    @JoinColumn(name = "account_id")
+    @JsonManagedReference
+    private Account accountShop;
+
     @OneToMany(mappedBy = "shopProduct", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Product> productList;
@@ -52,5 +52,6 @@ public class Shop {
     @OneToMany(mappedBy = "shopShipment", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Shipment> shipmentList;
+
 
 }

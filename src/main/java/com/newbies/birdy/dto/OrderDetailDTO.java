@@ -20,8 +20,6 @@ public class OrderDetailDTO {
 
     private String comment;
 
-    private Boolean status;
-
     private Integer productId;
 
     private String productName;

@@ -1,6 +1,7 @@
 package com.newbies.birdy.services.impl;
 
 import com.newbies.birdy.dto.ShopDTO;
+import com.newbies.birdy.entities.Account;
 import com.newbies.birdy.entities.Shop;
 import com.newbies.birdy.exceptions.entity.EntityNotFoundException;
 import com.newbies.birdy.repositories.ShopRepository;
@@ -13,7 +14,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ContextConfiguration(classes = {ShopServiceImpl.class})
@@ -28,12 +30,12 @@ class ShopServiceImplTest {
     /**
      * Method under test: {@link ShopServiceImpl#listByShopName(String, Boolean)}
      */
-    Shop shop1 = new Shop(1,"0928461772", "12345","Bird shop thu nhat",
-            "22 le lai", "img", new Date(), true, null, null);
-    Shop shop2 = new Shop(2,"0725116272", "12345","Bird shop thu hai",
-            "212 nguyen van troi", "img", new Date(), false, null, null);
-    Shop shop3 = new Shop(3,"0916371881", "12345","Bird shop thu ba",
-            "2/1/2 truong cong dinh", "img", new Date(), true, null, null);
+    Shop shop1 = new Shop(1,"Bird shop thu nhat",
+            "22 le lai", "img", new Date(), true, new Account(),null, null);
+    Shop shop2 = new Shop(2,"Bird shop thu hai",
+            "212 nguyen van troi", "img", new Date(),  false,new Account(), null, null);
+    Shop shop3 = new Shop(3,"Bird shop thu ba",
+            "2/1/2 truong cong dinh", "img", new Date(), true, new Account(),null, null);
 
     @Test
     void canListByShopName() {
@@ -45,7 +47,6 @@ class ShopServiceImplTest {
         List<ShopDTO> result = shopServiceImpl.listByShopName("o", true);
 
         assertEquals(2, result.size());
-        assertTrue(result.get(0).getStatus());
         verify(shopRepository).findByShopNameContainingAndStatus("o", true);
     }
 
@@ -61,7 +62,6 @@ class ShopServiceImplTest {
         List<ShopDTO> result = shopServiceImpl.listByShopName("nhat", true);
 
         assertEquals(1, result.size());
-        assertTrue(result.get(0).getStatus());
         assertEquals("Bird shop thu nhat", result.get(0).getShopName());
         verify(shopRepository).findByShopNameContainingAndStatus("nhat", true);
     }
@@ -75,8 +75,6 @@ class ShopServiceImplTest {
         ShopDTO result = shopServiceImpl.getShopById(3);
         assertEquals(3, result.getId());
         assertEquals(shop3.getShopName(), result.getShopName());
-        assertEquals(shop3.getPassword(),result.getPassword());
-        assertTrue(result.getStatus());
         assertEquals(shop3.getCreateDate(), result.getCreateDate());
         assertEquals(shop3.getAddress(), result.getAddress());
         verify(shopRepository).findById(3);
@@ -109,8 +107,6 @@ class ShopServiceImplTest {
         List<ShopDTO> result = shopServiceImpl.listAllShop(true);
 
         assertEquals(2, result.size());
-        assertTrue(result.get(0).getStatus());
-        assertTrue(result.get(1).getStatus());
 
         verify(shopRepository).findByStatus((Boolean) any());
     }

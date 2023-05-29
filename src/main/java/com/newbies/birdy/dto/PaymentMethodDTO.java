@@ -13,8 +13,6 @@ public class PaymentMethodDTO {
 
     private String paymentNumber;
 
-    private Boolean status;
-
     private Integer paymentTypeId;
 
     private String paymentTypeName;

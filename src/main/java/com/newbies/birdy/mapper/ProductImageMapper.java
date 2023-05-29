@@ -17,6 +17,7 @@ public interface ProductImageMapper {
     @Mapping(target = "productId", source = "productImg.id")
     ProductImageDTO toDTO(ProductImage productImage);
 
+    @Mapping(target = "status", ignore = true)
     @Mapping(target = "productImg", source = "productId", qualifiedByName = "mapProduct")
     ProductImage toEntity(ProductImageDTO dto);
 
