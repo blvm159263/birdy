@@ -12,4 +12,6 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
     List<Shop> findByShopNameContainingAndStatus(String name, Boolean status);
 
     List<Shop> findByStatus(Boolean status);
+
+    Shop findByIdAndStatus(Integer id, Boolean status);
 }
