@@ -15,13 +15,5 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
-    @Override
-    public Integer updateProduct(ProductDTO productDTO) {
-        return productRepository.save(ProductMapper.INSTANCE.toEntity(productDTO)).getId();
-    }
 
-    @Override
-    public Boolean deleteProduct(Integer productId) {
-        return null;
-    }
 }
