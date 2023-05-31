@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.nio.channels.Channels;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 
@@ -58,15 +59,14 @@ public class FirebaseStorageServiceImpl implements FirebaseStorageService {
     public String uploadFile(MultipartFile multipartFile) throws IOException {
         System.out.println("bucket name====" + bucketName);
         File file = convertMultiPartToFile(multipartFile);
-        Path filePath = file.toPath();
+        Path filePath  = file.toPath();
         String objectName = generateFileName(multipartFile);
 
         Storage storage = storageOptions.getService();
 
         BlobId blobId = BlobId.of(bucketName, objectName);
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setAcl(new ArrayList<>()).setContentType(multipartFile.getContentType()).build();
         Blob blob = storage.create(blobInfo, Files.readAllBytes(filePath));
-
 
         log.info("File " + filePath + " uploaded to bucket " + bucketName + " as " + objectName);
         return  objectName;

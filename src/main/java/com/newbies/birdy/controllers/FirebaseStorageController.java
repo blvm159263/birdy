@@ -1,6 +1,7 @@
 package com.newbies.birdy.controllers;
 
 import com.newbies.birdy.services.FirebaseStorageService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@Tag(name = "Firebase Storage API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/firebase")

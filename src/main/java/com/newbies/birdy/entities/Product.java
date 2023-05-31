@@ -27,6 +27,9 @@ public class Product {
     @Column(name = "product_name",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", nullable = false)
     private String productName;
 
+//    @Column(name = "im")
+//    private String imageMain;
+
     @Column(name = "unit_price", nullable = false)
     private Double unitPrice;
 

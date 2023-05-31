@@ -20,7 +20,7 @@ public class Account {
     @Column(name = "id", nullable = false, updatable = false)
     private Integer id;
 
-    @Column(name = "product_name", nullable = false)
+    @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
     @Column(name = "password", nullable = false)
