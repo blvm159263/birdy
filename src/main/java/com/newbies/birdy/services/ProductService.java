@@ -1,8 +1,11 @@
 package com.newbies.birdy.services;
 
 import com.newbies.birdy.dto.ProductDTO;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ProductService {
 
@@ -12,17 +15,15 @@ public interface ProductService {
 
     ProductDTO getProductById(Integer id);
 
-    ProductDTO getProductByIdAndStatus(Integer id, Boolean status);
+    List<ProductDTO> getFirst15ProductsWithStatusTrue();
 
-    List<ProductDTO> getAllProductsByStatus(Boolean status);
+    Map<List<ProductDTO>, Integer> getAllProductsByStatusAndPaging(Boolean status, Pageable pageable);
 
-    List<ProductDTO> getProductsByNameAndStatus(String name, Boolean status);
+    Map<List<ProductDTO>, Integer> getProductsByCategoryAndStatusAndPaging(Integer categoryId, Boolean status, Pageable pageable);
 
-    List<ProductDTO> getProductsByCategoryAndStatus(Integer categoryId, Boolean status);
+    Map<List<ProductDTO>, Integer> getProductsByShopAndStatusAndPaging(Integer shopId, Boolean status, Pageable pageable);
 
-    List<ProductDTO> getProductsByPriceRangeAndStatus(Double from, Double to, Boolean status);
+    Map<List<ProductDTO>, Integer> searchAndSortProductsWithPaging(String search, Integer rating, Double from, Double to, Boolean status, Pageable pageable);
 
-    List<ProductDTO> getProductsByRatingAndStatus(Integer rating, Boolean status);
-
-    List<ProductDTO> getProductsByShopAndStatus(Integer shopId, Boolean status);
+    Map<List<ProductDTO>, Integer> searchAndSortProductsInCategoryWithPaging(Integer categoryId, String search, Integer rating, Double from, Double to, Boolean status, Pageable pageable);
 }
