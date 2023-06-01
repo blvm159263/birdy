@@ -1,7 +1,6 @@
 package com.newbies.birdy.controllers;
 
 import com.newbies.birdy.dto.ProductDTO;
-import com.newbies.birdy.entities.Category;
 import com.newbies.birdy.repositories.CategoryRepository;
 import com.newbies.birdy.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
