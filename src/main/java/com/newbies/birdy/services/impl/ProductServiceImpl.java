@@ -2,6 +2,7 @@ package com.newbies.birdy.services.impl;
 
 import com.newbies.birdy.dto.ProductDTO;
 import com.newbies.birdy.entities.Category;
+import com.newbies.birdy.entities.Product;
 import com.newbies.birdy.entities.Shop;
 import com.newbies.birdy.mapper.ProductMapper;
 import com.newbies.birdy.repositories.CategoryRepository;
@@ -10,9 +11,17 @@ import com.newbies.birdy.repositories.ShopRepository;
 import com.newbies.birdy.services.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -30,45 +39,72 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO getProductByIdAndStatus(Integer id, Boolean status) {
-        return ProductMapper.INSTANCE.toDTO(productRepository.findByIdAndStatus(id, status).orElseThrow());
-    }
-
-    @Override
-    public List<ProductDTO> getAllProductsByStatus(Boolean status) {
-        return productRepository.findByStatus(status).stream().map(ProductMapper.INSTANCE::toDTO).toList();
-    }
-
-    @Override
-    public List<ProductDTO> getProductsByNameAndStatus(String name, Boolean status) {
-        return productRepository.findByProductNameContainingAndStatus(name, status)
+    public List<ProductDTO> getFirst15ProductsWithStatusTrue() {
+        return productRepository.findTop15ByRatingGreaterThanAndStatusOrderByRatingDesc(3, true)
                 .stream().map(ProductMapper.INSTANCE::toDTO).toList();
     }
 
     @Override
-    public List<ProductDTO> getProductsByCategoryAndStatus(Integer categoryId, Boolean status) {
+    public Map<List<ProductDTO>, Integer> getAllProductsByStatusAndPaging(Boolean status, Pageable pageable) {
+        Map<List<ProductDTO>, Integer> pair = new HashMap<>();
+        Page<Product> pageList = productRepository.findByStatus(status, pageable);
+        pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
+        return pair;
+    }
+
+    @Override
+    public Map<List<ProductDTO>, Integer> getProductsByCategoryAndStatusAndPaging(Integer categoryId, Boolean status, Pageable pageable) {
         Category category = categoryRepository.findByIdAndStatus(categoryId, true);
-        return productRepository.findByCategoryAndStatus(category, status)
-                .stream().map(ProductMapper.INSTANCE::toDTO).toList();
+        Map<List<ProductDTO>, Integer> pair = new HashMap<>();
+        Page<Product> pageList = productRepository.findByCategoryAndStatus(category, status, pageable);
+        pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
+        return pair;
     }
 
     @Override
-    public List<ProductDTO> getProductsByPriceRangeAndStatus(Double from, Double to, Boolean status) {
-        return productRepository.findByUnitPriceBetweenAndStatus(from, to, status)
-                .stream().map(ProductMapper.INSTANCE::toDTO).toList();
-    }
-
-    @Override
-    public List<ProductDTO> getProductsByRatingAndStatus(Integer rating, Boolean status) {
-        return productRepository.findByRatingAndStatus(rating, status)
-                .stream().map(ProductMapper.INSTANCE::toDTO).toList();
-    }
-
-    @Override
-    public List<ProductDTO> getProductsByShopAndStatus(Integer shopId, Boolean status) {
+    public Map<List<ProductDTO>, Integer> getProductsByShopAndStatusAndPaging(Integer shopId, Boolean status, Pageable pageable) {
         Shop shop = shopRepository.findByIdAndStatus(shopId, true);
-        return productRepository.findByShopProductAndStatus(shop, status)
-                .stream().map(ProductMapper.INSTANCE::toDTO).toList();
+        Map<List<ProductDTO>, Integer> pair = new HashMap<>();
+        Page<Product> pageList = productRepository.findByShopProductAndStatus(shop, status, pageable);
+        pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
+        return pair;
+    }
+
+    @Override
+    public Map<List<ProductDTO>, Integer> searchAndSortProductsWithPaging(String search, Integer rating, Double from, Double to, Boolean status, Pageable pageable) {
+        Map<List<ProductDTO>, Integer> pair = new HashMap<>();
+        Page<Product> pageList = null;
+        if (rating < 0 && from < 0 && to < 0){
+            pageList = productRepository.findByProductNameIgnoreCaseContainingAndStatus(search, status, pageable);
+        } else if(rating >= 0 && from < 0 && to < 0){
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndRatingAndStatus(search, rating, status, pageable);
+        } else if (rating < 0 && from >= 0 && to >= from) {
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndUnitPriceBetweenAndStatus(search, from, to, status, pageable);
+        } else if (rating >= 0 && from >= 0 && to >= from) {
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndRatingAndUnitPriceBetweenAndStatus(search, rating, from, to, status, pageable);
+        }
+
+        pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
+        return pair;
+    }
+
+    @Override
+    public Map<List<ProductDTO>, Integer> searchAndSortProductsInCategoryWithPaging(Integer categoryId, String search, Integer rating, Double from, Double to, Boolean status, Pageable pageable) {
+        Category category = categoryRepository.findByIdAndStatus(categoryId, true);
+        Map<List<ProductDTO>, Integer> pair = new HashMap<>();
+        Page<Product> pageList = null;
+        if (rating < 0 && from < 0 && to < 0){
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndCategoryAndStatus(search, category, status, pageable);
+        } else if(rating >= 0 && from < 0 && to < 0){
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndCategoryAndRatingAndStatus(search, category, rating, status, pageable);
+        } else if (rating < 0 && from >= 0 && to >= from) {
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndCategoryAndUnitPriceBetweenAndStatus(search, category, from, to, status, pageable);
+        } else if (rating >= 0 && from >= 0 && to >= from) {
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndCategoryAndRatingAndUnitPriceBetweenAndStatus(search, category, rating, from, to, status, pageable);
+        }
+
+        pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
+        return pair;
     }
 
 

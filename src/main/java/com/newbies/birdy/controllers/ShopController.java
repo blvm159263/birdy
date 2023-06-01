@@ -1,20 +1,28 @@
 package com.newbies.birdy.controllers;
 
+import com.newbies.birdy.dto.ProductDTO;
 import com.newbies.birdy.dto.ShopDTO;
 import com.newbies.birdy.exceptions.ObjectException;
+import com.newbies.birdy.services.ProductService;
 import com.newbies.birdy.services.ShopService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Tag(name = "Shop API")
 @RestController
@@ -23,6 +31,7 @@ import java.util.List;
 public class ShopController {
 
     private final ShopService shopService;
+    private final ProductService productService;
 
     @Operation(summary = "Search shop by given name")
     @ApiResponses(value = {
@@ -63,6 +72,58 @@ public class ShopController {
         if(list == null){
             return new ResponseEntity<>("Not found any shop", HttpStatus.NOT_FOUND);
         }else{
+            return ResponseEntity.ok(list);
+        }
+    }
+
+    @Operation(summary = "List all active or inactive shops + paging")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Load Products List", content = @Content(schema = @Schema(implementation = ProductDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @GetMapping("/{status}/view")
+    public ResponseEntity<?> getAllProductsByStatusAndPaging(
+            @Parameter(description = "Shop status (true=active or false=inactive)", example = "true") @PathVariable("status") Boolean status,
+            @Parameter(description = "Search shop", example = "Shop") @RequestParam("search") String search,
+            @Parameter(description = "Page number (start from 0)", example = "0") @RequestParam("page") Optional<Integer> page) {
+        Pageable pageable = PageRequest.of(page.orElse(0), 6);
+        Map<List<ShopDTO>, Integer> listMap = shopService.listByNameAndStatusWithPaging(search, status, pageable);
+        List<Object> list = new ArrayList<>();
+        listMap.forEach((shopDTOS, integer) -> {
+            list.add(shopDTOS);
+            list.add(integer);
+        });
+        if (list.isEmpty()) {
+            return new ResponseEntity<>("No shop found!!!", HttpStatus.NOT_FOUND);
+        } else {
+            return ResponseEntity.ok(list);
+        }
+    }
+
+    @Operation(summary = "Get all available or unavailable products by shop")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Load Products List", content = @Content(schema = @Schema(implementation = ProductDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @GetMapping("/{id}/products/{status}")
+    public ResponseEntity<?> getAllProductsByShopAndStatus(
+            @Parameter(description = "Products status (true=available or false=unavailable)", example = "true") @PathVariable("status") Boolean status,
+            @Parameter(description = "Shop ID", example = "1") @PathVariable("id") Integer id,
+            @Parameter(description = "Page number (start from 0)", example = "0") @RequestParam("page") Optional<Integer> page) {
+        Pageable pageable = PageRequest.of(page.orElse(0), 30);
+        Map<List<ProductDTO>, Integer> listMap = productService.getProductsByShopAndStatusAndPaging(id, status, pageable);
+        List<Object> list = new ArrayList<>();
+        listMap.forEach((productDTOS, integer) -> {
+            list.add(productDTOS);
+            list.add(integer);
+        });
+        if (list.isEmpty()) {
+            return new ResponseEntity<>("No product found!!!", HttpStatus.NOT_FOUND);
+        } else {
             return ResponseEntity.ok(list);
         }
     }

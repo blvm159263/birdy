@@ -8,9 +8,13 @@ import com.newbies.birdy.repositories.ShopRepository;
 import com.newbies.birdy.services.ShopService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Transactional
 @Service
@@ -34,5 +38,13 @@ public class ShopServiceImpl implements ShopService {
     public List<ShopDTO> listAllShop(Boolean status) {
         List<Shop> shopList = shopRepository.findByStatus(status);
         return shopList.stream().map(ShopMapper.INSTANCE::toDTO).toList();
+    }
+
+    @Override
+    public Map<List<ShopDTO>, Integer> listByNameAndStatusWithPaging(String name, Boolean status, Pageable pageable) {
+        Map<List<ShopDTO>, Integer> pair = new HashMap<>();
+        Page<Shop> shops = shopRepository.findByStatusAndShopNameContaining(status, name, pageable);
+        pair.put(shops.stream().map(ShopMapper.INSTANCE::toDTO).toList(), shops.getTotalPages());
+        return pair;
     }
 }
