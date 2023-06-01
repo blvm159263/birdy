@@ -1,25 +1,14 @@
 package com.newbies.birdy.dto;
-
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInformationDTO {
-
-    private String email;
-
-    private String fullName;
-
-    private Date dob;
-
-    private Integer gender;
-
+public class AuthenticationRequest {
     private String phoneNumber;
-
     private String password;
 }

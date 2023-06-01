@@ -18,7 +18,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountDTO getByPhoneNumber(String phoneNumber, Boolean status) {
-        Account account = accountRepository.findByPhoneNumberAndStatus(phoneNumber, status);
+        Account account = accountRepository.findByPhoneNumberAndStatus(phoneNumber, status).orElse(null);
         return AccountMapper.INSTANCE.toDTO(account);
     }
 }
