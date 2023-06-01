@@ -9,10 +9,6 @@ import java.util.Map;
 
 public interface ProductService {
 
-    Integer updateProduct(ProductDTO productDTO);
-
-    Boolean deleteProduct(Integer productId);
-
     ProductDTO getProductById(Integer id);
 
     List<ProductDTO> getFirst15ProductsWithStatusTrue();
