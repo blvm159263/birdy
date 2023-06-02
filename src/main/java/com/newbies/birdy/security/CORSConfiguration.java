@@ -11,7 +11,7 @@ public class CORSConfiguration implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedMethods("*")
-                .allowedOrigins("http://localhost:3000/")
+                .allowedOrigins("https://birdy-fe.vercel.app/")
                 .allowedHeaders("*")
                 .allowCredentials(true)
                 .maxAge(-1);
