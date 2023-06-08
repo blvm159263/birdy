@@ -14,6 +14,8 @@ public class ProductDTO {
 
     private String productName;
 
+    private String imageMain;
+
     private Double unitPrice;
 
     private int salePtc;
