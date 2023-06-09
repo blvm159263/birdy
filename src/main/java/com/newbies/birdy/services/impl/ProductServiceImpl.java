@@ -107,5 +107,10 @@ public class ProductServiceImpl implements ProductService {
         return pair;
     }
 
+    @Override
+    public Integer addProduct(ProductDTO productDTO) {
+        return productRepository.save(ProductMapper.INSTANCE.toEntity(productDTO)).getId();
+    }
+
 
 }

@@ -12,6 +12,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Transactional
 @Service
 @RequiredArgsConstructor
@@ -33,5 +36,18 @@ public class AddressServiceImpl implements AddressService {
             return address.getId();
         }
         return id;
+    }
+
+    @Override
+    public List<AddressDTO> getAllUserAddress(Integer userId, Boolean status) {
+        List<AddressDTO> result = new ArrayList<>();
+        List<Address> list = addressRepository.findByUserAddressAndStatus(userId, status);
+        if(list != null){
+            list.forEach(address -> {
+                result.add(AddressMapper.INSTANCE.toDTO(address));
+            });
+        }
+
+        return result;
     }
 }
