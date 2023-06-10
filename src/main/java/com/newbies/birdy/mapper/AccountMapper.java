@@ -14,6 +14,7 @@ public interface AccountMapper {
 
     AccountDTO toDTO(Account address);
 
+    @Mapping(target = "role", source = "role")
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "shop", ignore = true)
     @Mapping(target = "status", ignore = true)

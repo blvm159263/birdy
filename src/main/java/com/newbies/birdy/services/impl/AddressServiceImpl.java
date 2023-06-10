@@ -41,7 +41,9 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public List<AddressDTO> getAllUserAddress(Integer userId, Boolean status) {
         List<AddressDTO> result = new ArrayList<>();
-        List<Address> list = addressRepository.findByUserAddressAndStatus(userId, status);
+        User user = new User();
+        user.setId(userId);
+        List<Address> list = addressRepository.findByUserAddressAndStatus(user, status);
         if(list != null){
             list.forEach(address -> {
                 result.add(AddressMapper.INSTANCE.toDTO(address));

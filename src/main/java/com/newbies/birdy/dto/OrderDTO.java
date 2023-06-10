@@ -30,7 +30,6 @@ public class OrderDTO {
 
     private Integer orderParentId;
 
-    private Integer paymentStatusId;
+    private String paymentStatus;
 
-    private String paymentStatusName;
 }

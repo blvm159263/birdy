@@ -1,17 +1,16 @@
 package com.newbies.birdy.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderStatusDetailDTO {
-
-    private Integer id;
-
-    private String comment;
-
-    private String orderId;
+public class Response {
+    private String message;
+    private String status;
+    private String data;
 }
