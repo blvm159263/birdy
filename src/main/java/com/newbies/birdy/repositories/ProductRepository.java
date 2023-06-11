@@ -14,8 +14,6 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 
-    Optional<Product> findById(Integer id);
-
     List<Product> findTop15ByRatingGreaterThanAndStatusOrderByRatingDesc(Integer rating, Boolean status);
 
     Page<Product> findByStatus(Boolean status, Pageable page);

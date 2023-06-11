@@ -1,6 +1,9 @@
 package com.newbies.birdy.controllers;
 
 import com.newbies.birdy.dto.ProductDTO;
+import com.newbies.birdy.dto.ProductRequestDTO;
+import com.newbies.birdy.services.FirebaseStorageService;
+import com.newbies.birdy.services.ProductImageService;
 import com.newbies.birdy.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,11 +19,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
 
 @Tag(name = "Product API")
 @RestController
@@ -29,6 +31,10 @@ import java.util.Optional;
 public class ProductController {
 
     private final ProductService productService;
+
+    private final ProductImageService productImageService;
+
+    private final FirebaseStorageService firebaseStorageService;
 
     @Operation(summary = "Get first 15 available products for landing page")
     @ApiResponses(value = {
@@ -202,6 +208,33 @@ public class ProductController {
             return new ResponseEntity<>("No product found!!!", HttpStatus.NOT_FOUND);
         } else {
             return ResponseEntity.ok(list);
+        }
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createProduct(@RequestBody ProductRequestDTO productRequestDTO) {
+        Integer productId;
+        try {
+            String fileName = firebaseStorageService.uploadFile(productRequestDTO.getMainImage());
+            String mainImgUrl = firebaseStorageService.getImageUrl(fileName);
+            productRequestDTO.getProductDTO().setImageMain(mainImgUrl);
+            productId = productService.addProduct(productRequestDTO.getProductDTO());
+            if(productId != null){
+                MultipartFile[] subImages = productRequestDTO.getSubImages();
+                String[] subImgUrls = new String[subImages.length];
+                for (int i = 0; i < productRequestDTO.getSubImages().length; i++) {
+                    fileName = firebaseStorageService.uploadFile(subImages[i]);
+                    subImgUrls[i] = firebaseStorageService.getImageUrl(fileName);
+                }
+                productImageService.saveImages(subImgUrls, productId);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if(productId != null) {
+            return new ResponseEntity<>(productId, HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>("Product created failed!!!", HttpStatus.BAD_REQUEST);
         }
     }
 }

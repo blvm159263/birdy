@@ -36,6 +36,10 @@ public class Order {
     @Column(name = "comment",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
     private String comment;
 
+    @Column(name = "payment_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
+
     @Column(name = "status", nullable = false)
     private Boolean status;
 
@@ -49,24 +53,14 @@ public class Order {
     @JsonManagedReference
     private PaymentMethod paymentMethod;
 
-
     @ManyToOne()
     @JoinColumn(name = "order_parent_id")
     @JsonManagedReference
     private Order order;
 
-    @ManyToOne
-    @JoinColumn(name = "payment_status_id", nullable = false)
-    @JsonManagedReference
-    private PaymentStatus paymentStatus;
-
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Order> orderList;
-
-    @OneToMany(mappedBy = "orderStatusDetail", fetch = FetchType.LAZY)
-    @JsonBackReference
-    private List<OrderStatusDetail> orderStatusDetailList;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     @JsonBackReference
