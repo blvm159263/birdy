@@ -2,8 +2,8 @@ package com.newbies.birdy.services.impl;
 
 import com.newbies.birdy.dto.AuthenticationRequest;
 import com.newbies.birdy.dto.AuthenticationResponse;
-import com.newbies.birdy.dto.UserDTO;
 import com.newbies.birdy.dto.RegisterRequest;
+import com.newbies.birdy.dto.UserDTO;
 import com.newbies.birdy.entities.Account;
 import com.newbies.birdy.entities.Role;
 import com.newbies.birdy.entities.User;

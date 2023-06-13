@@ -31,7 +31,9 @@ public class AddressServiceImpl implements AddressService {
 
         addressDTO.setIsDefault(user.getAddressList() == null);
         addressDTO.setUserId(userId);
-        Address address = addressRepository.save(AddressMapper.INSTANCE.toEntity(addressDTO));
+        Address prev = AddressMapper.INSTANCE.toEntity(addressDTO);
+        prev.setStatus(true);
+        Address address = addressRepository.save(prev);
         if(address != null){
             return address.getId();
         }
