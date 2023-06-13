@@ -2,8 +2,8 @@ package com.newbies.birdy.services.impl;
 
 import com.newbies.birdy.dto.AuthenticationRequest;
 import com.newbies.birdy.dto.AuthenticationResponse;
-import com.newbies.birdy.dto.UserDTO;
 import com.newbies.birdy.dto.RegisterRequest;
+import com.newbies.birdy.dto.UserDTO;
 import com.newbies.birdy.entities.Account;
 import com.newbies.birdy.entities.Role;
 import com.newbies.birdy.entities.User;
@@ -36,9 +36,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getPhoneNumber(), request.getPassword()));
         var account = accountRepository.findByPhoneNumberAndStatus(request.getPhoneNumber(), true)
                 .orElseThrow();
-        var jwtToken = jwtService.generateToken(account);
+        var jwtToken = jwtService.generateToken(account, account.getRole().name());
         var roleName = account.getRole().name();
-        return AuthenticationResponse.builder().token(jwtToken).roleName(roleName).build();
+        return AuthenticationResponse.builder().token(jwtToken).build();
     }
 
     @Override

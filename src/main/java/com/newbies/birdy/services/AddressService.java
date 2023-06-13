@@ -9,4 +9,6 @@ public interface AddressService {
     Integer createAddress(Integer userId, AddressDTO addressDTO);
 
     List<AddressDTO> getAllUserAddress(Integer userId, Boolean status);
+
+    String getAddressById(Integer addressId);
 }

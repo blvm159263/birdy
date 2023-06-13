@@ -5,7 +5,6 @@ import com.newbies.birdy.entities.Product;
 import com.newbies.birdy.entities.Shop;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -44,4 +43,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     Page<Product> findByCategoryAndStatus(Category category, Boolean status, Pageable pageable);
 
     Page<Product> findByShopProductAndStatus(Shop shop, Boolean status, Pageable pageable);
+
+    Optional<Product> findByIdAndStatus(Integer id, Boolean status);
 }

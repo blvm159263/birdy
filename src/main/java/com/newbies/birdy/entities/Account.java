@@ -26,7 +26,7 @@ public class Account implements UserDetails {
     @Column(name = "id", nullable = false, updatable = false)
     private Integer id;
 
-    @Column(name = "phone_number", nullable = false)
+    @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
 
     @Column(name = "password", nullable = false)

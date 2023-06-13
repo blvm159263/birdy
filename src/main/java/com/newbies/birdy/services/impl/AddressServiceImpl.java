@@ -52,4 +52,9 @@ public class AddressServiceImpl implements AddressService {
 
         return result;
     }
+
+    @Override
+    public String getAddressById(Integer addressId) {
+        return addressRepository.findById(addressId).orElseThrow(() -> new EntityNotFoundException("Can not find address have id: " + addressId)).getAddress();
+    }
 }

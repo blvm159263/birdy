@@ -2,8 +2,8 @@ package com.newbies.birdy.controllers;
 
 import com.newbies.birdy.dto.AuthenticationRequest;
 import com.newbies.birdy.dto.AuthenticationResponse;
-import com.newbies.birdy.dto.UserDTO;
 import com.newbies.birdy.dto.RegisterRequest;
+import com.newbies.birdy.dto.UserDTO;
 import com.newbies.birdy.services.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

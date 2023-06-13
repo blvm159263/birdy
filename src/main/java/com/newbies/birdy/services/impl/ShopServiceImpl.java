@@ -47,4 +47,9 @@ public class ShopServiceImpl implements ShopService {
         pair.put(shops.stream().map(ShopMapper.INSTANCE::toDTO).toList(), shops.getTotalPages());
         return pair;
     }
+
+    @Override
+    public String getShopAddress(Integer shopId) {
+        return shopRepository.findByIdAndStatus(shopId, true).getAddress();
+    }
 }

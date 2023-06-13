@@ -31,7 +31,8 @@ public class Order {
     private Date createDate;
 
     @Column(name = "state", nullable = false)
-    private Integer state;
+    @Enumerated(EnumType.STRING)
+    private OrderState state;
 
     @Column(name = "comment",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
     private String comment;
@@ -53,10 +54,15 @@ public class Order {
     @JsonManagedReference
     private PaymentMethod paymentMethod;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "order_parent_id")
     @JsonManagedReference
     private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "address_id", nullable = false)
+    @JsonManagedReference
+    private Address addressOrder;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     @JsonBackReference

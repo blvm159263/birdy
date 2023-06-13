@@ -2,7 +2,6 @@ package com.newbies.birdy.services;
 
 import com.newbies.birdy.dto.ProductDTO;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Map;
