@@ -40,14 +40,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> getFirst15ProductsWithStatusTrue() {
-        return productRepository.findTop15ByRatingGreaterThanAndStatusOrderByRatingDesc(3, true)
+        return productRepository.findTop15ByRatingGreaterThanAndStateAndStatusOrderByRatingDesc(3, 1, true)
                 .stream().map(ProductMapper.INSTANCE::toDTO).toList();
     }
 
     @Override
     public Map<List<ProductDTO>, Integer> getAllProductsByStatusAndPaging(Boolean status, Pageable pageable) {
         Map<List<ProductDTO>, Integer> pair = new HashMap<>();
-        Page<Product> pageList = productRepository.findByStatus(status, pageable);
+        Page<Product> pageList = productRepository.findByStatusAndState(status, 2, pageable);
         pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
         return pair;
     }
@@ -56,13 +56,24 @@ public class ProductServiceImpl implements ProductService {
     public Map<List<ProductDTO>, Integer> getProductsByCategoryAndStatusAndPaging(Integer categoryId, Boolean status, Pageable pageable) {
         Category category = categoryRepository.findByIdAndStatus(categoryId, true);
         Map<List<ProductDTO>, Integer> pair = new HashMap<>();
-        Page<Product> pageList = productRepository.findByCategoryAndStatus(category, status, pageable);
+        Page<Product> pageList = productRepository.findByCategoryAndStateAndStatus(category, 2, status, pageable);
         pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
         return pair;
     }
 
     @Override
     public Map<List<ProductDTO>, Integer> getProductsByShopAndStatusAndPaging(Integer shopId, Boolean status, Pageable pageable) {
+        Shop shop = shopRepository.findByIdAndStatus(shopId, true);
+        Map<List<ProductDTO>, Integer> pair = new HashMap<>();
+        Page<Product> pageList = productRepository.findByShopProductAndStateAndStatus(shop, 2, status, pageable);
+        pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
+        return pair;
+    }
+
+
+    // get all shop products for shop management
+    @Override
+    public Map<List<ProductDTO>, Integer> getProductsByShopAndStatusAndPagingForShop(Integer shopId, Boolean status, Pageable pageable) {
         Shop shop = shopRepository.findByIdAndStatus(shopId, true);
         Map<List<ProductDTO>, Integer> pair = new HashMap<>();
         Page<Product> pageList = productRepository.findByShopProductAndStatus(shop, status, pageable);
@@ -75,13 +86,13 @@ public class ProductServiceImpl implements ProductService {
         Map<List<ProductDTO>, Integer> pair = new HashMap<>();
         Page<Product> pageList = null;
         if (rating < 0 && from < 0 && to < 0){
-            pageList = productRepository.findByProductNameIgnoreCaseContainingAndStatus(search, status, pageable);
+            pageList = productRepository.findByProductNameIgnoreCaseContainingAndStateAndStatus(search, 2, status, pageable);
         } else if(rating >= 0 && from < 0 && to < 0){
-            pageList = productRepository.findByProductNameContainingIgnoreCaseAndRatingAndStatus(search, rating, status, pageable);
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndRatingAndStatus(search, 2, rating, status, pageable);
         } else if (rating < 0 && from >= 0 && to >= from) {
-            pageList = productRepository.findByProductNameContainingIgnoreCaseAndUnitPriceBetweenAndStatus(search, from, to, status, pageable);
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndUnitPriceBetweenAndStatus(search, 2, from, to, status, pageable);
         } else if (rating >= 0 && from >= 0 && to >= from) {
-            pageList = productRepository.findByProductNameContainingIgnoreCaseAndRatingAndUnitPriceBetweenAndStatus(search, rating, from, to, status, pageable);
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndRatingAndUnitPriceBetweenAndStatus(search, 2, rating, from, to, status, pageable);
         }
 
         pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
@@ -94,13 +105,13 @@ public class ProductServiceImpl implements ProductService {
         Map<List<ProductDTO>, Integer> pair = new HashMap<>();
         Page<Product> pageList = null;
         if (rating < 0 && from < 0 && to < 0){
-            pageList = productRepository.findByProductNameContainingIgnoreCaseAndCategoryAndStatus(search, category, status, pageable);
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndCategoryAndStatus(search, 2, category, status, pageable);
         } else if(rating >= 0 && from < 0 && to < 0){
-            pageList = productRepository.findByProductNameContainingIgnoreCaseAndCategoryAndRatingAndStatus(search, category, rating, status, pageable);
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndCategoryAndRatingAndStatus(search, 2, category, rating, status, pageable);
         } else if (rating < 0 && from >= 0 && to >= from) {
-            pageList = productRepository.findByProductNameContainingIgnoreCaseAndCategoryAndUnitPriceBetweenAndStatus(search, category, from, to, status, pageable);
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndCategoryAndUnitPriceBetweenAndStatus(search, 2, category, from, to, status, pageable);
         } else if (rating >= 0 && from >= 0 && to >= from) {
-            pageList = productRepository.findByProductNameContainingIgnoreCaseAndCategoryAndRatingAndUnitPriceBetweenAndStatus(search, category, rating, from, to, status, pageable);
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndCategoryAndRatingAndUnitPriceBetweenAndStatus(search, 2, category, rating, from, to, status, pageable);
         }
 
         pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());

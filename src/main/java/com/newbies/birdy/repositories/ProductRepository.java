@@ -15,33 +15,35 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 
-    List<Product> findTop15ByRatingGreaterThanAndStatusOrderByRatingDesc(Integer rating, Boolean status);
+    List<Product> findTop15ByRatingGreaterThanAndStateAndStatusOrderByRatingDesc(Integer rating, Integer state, Boolean status);
 
-    Page<Product> findByStatus(Boolean status, Pageable page);
+    Page<Product> findByStatusAndState(Boolean status, Integer state, Pageable page);
 
     //------------- search and sort (all products) ------------------
-    Page<Product> findByProductNameIgnoreCaseContainingAndStatus(String name, Boolean status, Pageable pageable);
+    Page<Product> findByProductNameIgnoreCaseContainingAndStateAndStatus(String name, Integer state, Boolean status, Pageable pageable);
 
-    Page<Product> findByProductNameContainingIgnoreCaseAndRatingAndStatus(String name, Integer rating, Boolean status, Pageable pageable);
+    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndRatingAndStatus(String name, Integer state, Integer rating, Boolean status, Pageable pageable);
 
-    Page<Product> findByProductNameContainingIgnoreCaseAndUnitPriceBetweenAndStatus(String name, Double from, Double to, Boolean status, Pageable pageable);
+    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndUnitPriceBetweenAndStatus(String name, Integer state, Double from, Double to, Boolean status, Pageable pageable);
 
-    Page<Product> findByProductNameContainingIgnoreCaseAndRatingAndUnitPriceBetweenAndStatus(String name, Integer rating, Double from, Double to, Boolean status, Pageable pageable);
+    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndRatingAndUnitPriceBetweenAndStatus(String name, Integer state, Integer rating, Double from, Double to, Boolean status, Pageable pageable);
 
     // --------------------------------------------------------------
 
     //------------ search and sort in a category ----------------
-    Page<Product> findByProductNameContainingIgnoreCaseAndCategoryAndStatus(String search, Category category, Boolean status, Pageable pageable);
+    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndCategoryAndStatus(String search, Integer state, Category category, Boolean status, Pageable pageable);
 
-    Page<Product> findByProductNameContainingIgnoreCaseAndCategoryAndRatingAndStatus(String name, Category category, Integer rating, Boolean status, Pageable pageable);
+    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndCategoryAndRatingAndStatus(String name, Integer state, Category category, Integer rating, Boolean status, Pageable pageable);
 
-    Page<Product> findByProductNameContainingIgnoreCaseAndCategoryAndUnitPriceBetweenAndStatus(String name, Category category, Double from, Double to, Boolean status, Pageable pageable);
+    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndCategoryAndUnitPriceBetweenAndStatus(String name, Integer state, Category category, Double from, Double to, Boolean status, Pageable pageable);
 
-    Page<Product> findByProductNameContainingIgnoreCaseAndCategoryAndRatingAndUnitPriceBetweenAndStatus(String name, Category category, Integer rating, Double from, Double to, Boolean status, Pageable pageable);
+    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndCategoryAndRatingAndUnitPriceBetweenAndStatus(String name, Integer state, Category category, Integer rating, Double from, Double to, Boolean status, Pageable pageable);
 
     // ----------------------------------------------------------
 
-    Page<Product> findByCategoryAndStatus(Category category, Boolean status, Pageable pageable);
+    Page<Product> findByCategoryAndStateAndStatus(Category category, Integer state, Boolean status, Pageable pageable);
+
+    Page<Product> findByShopProductAndStateAndStatus(Shop shop, Integer state, Boolean status, Pageable pageable);
 
     Page<Product> findByShopProductAndStatus(Shop shop, Boolean status, Pageable pageable);
 }

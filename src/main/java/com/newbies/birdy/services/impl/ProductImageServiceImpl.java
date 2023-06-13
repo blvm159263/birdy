@@ -1,12 +1,17 @@
 package com.newbies.birdy.services.impl;
 
+import com.newbies.birdy.dto.ProductImageDTO;
+import com.newbies.birdy.entities.Product;
 import com.newbies.birdy.entities.ProductImage;
+import com.newbies.birdy.mapper.ProductImageMapper;
 import com.newbies.birdy.repositories.ProductImageRepository;
 import com.newbies.birdy.repositories.ProductRepository;
 import com.newbies.birdy.services.ProductImageService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Transactional
 @Service
@@ -30,5 +35,12 @@ public class ProductImageServiceImpl implements ProductImageService {
             throw new RuntimeException(e.getMessage());
         }
 
+    }
+
+    @Override
+    public List<ProductImageDTO> getAllImageByProductId(Integer productId) {
+        Product product = productRepository.findById(productId).orElseThrow();
+        List<ProductImage> list = productImageRepository.findByProductImgAndStatus(product, true);
+        return list.stream().map(ProductImageMapper.INSTANCE::toDTO).toList();
     }
 }

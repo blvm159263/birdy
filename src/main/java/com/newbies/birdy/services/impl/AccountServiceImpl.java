@@ -21,4 +21,9 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.findByPhoneNumberAndStatus(phoneNumber, status).orElse(null);
         return AccountMapper.INSTANCE.toDTO(account);
     }
+
+    @Override
+    public AccountDTO getById(Integer id) {
+        return AccountMapper.INSTANCE.toDTO(accountRepository.findById(id).orElseThrow(() -> new RuntimeException("ID account not found")));
+    }
 }

@@ -1,10 +1,15 @@
 package com.newbies.birdy.controllers;
 
+import com.newbies.birdy.dto.AccountDTO;
 import com.newbies.birdy.dto.ProductDTO;
 import com.newbies.birdy.dto.ShopDTO;
+import com.newbies.birdy.dto.UserDTO;
 import com.newbies.birdy.exceptions.ObjectException;
+import com.newbies.birdy.mapper.AccountMapper;
+import com.newbies.birdy.services.AccountService;
 import com.newbies.birdy.services.ProductService;
 import com.newbies.birdy.services.ShopService;
+import com.newbies.birdy.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,10 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Tag(name = "Shop API")
 @RestController
@@ -32,6 +34,8 @@ public class ShopController {
 
     private final ShopService shopService;
     private final ProductService productService;
+    private final AccountService accountService;
+    private final UserService userService;
 
     @Operation(summary = "Search shop by given name")
     @ApiResponses(value = {
@@ -60,7 +64,22 @@ public class ShopController {
         return ResponseEntity.ok(shopService.getShopById(id));
     }
 
-    @Operation(summary = "List all shop")
+    @Operation(summary = "Get shop detail by shop id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Not Found Shop", content = @Content(schema = @Schema(implementation = ObjectException.class))),
+            @ApiResponse(responseCode = "200", description = "Return Shop", content = @Content(schema = @Schema(implementation = ShopDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<?> getShopDetailById(@PathVariable(name = "id") Integer id){
+        ShopDTO shop = shopService.getShopById(id);
+        AccountDTO account = accountService.getById(shop.getAccountId());
+//        UserDTO user = userService.getUserByAccount(AccountMapper.INSTANCE.toEntity(account));
+        List<Object> list = new ArrayList<>(Arrays.asList(shop, account));
+        return ResponseEntity.ok(list);
+    }
+
+    @Operation(summary = "List all active shop")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Not Found any Shop", content = @Content(schema = @Schema(implementation = ObjectException.class))),
             @ApiResponse(responseCode = "200", description = "Return Shop List", content = @Content(schema = @Schema(implementation = ShopDTO.class))),
@@ -102,7 +121,7 @@ public class ShopController {
         }
     }
 
-    @Operation(summary = "Get all available or unavailable products by shop")
+    @Operation(summary = "Get all available or unavailable products by shop management")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Load Products List", content = @Content(schema = @Schema(implementation = ProductDTO.class))),
             @ApiResponse(responseCode = "404", description = "Not found"),
@@ -110,12 +129,37 @@ public class ShopController {
             @ApiResponse(responseCode = "500", description = "Internal error")
     })
     @GetMapping("/{id}/products/{status}")
-    public ResponseEntity<?> getAllProductsByShopAndStatus(
+    public ResponseEntity<?> getAllProductsByShopAndStatusForShop(
             @Parameter(description = "Products status (true=available or false=unavailable)", example = "true") @PathVariable("status") Boolean status,
             @Parameter(description = "Shop ID", example = "1") @PathVariable("id") Integer id,
             @Parameter(description = "Page number (start from 0)", example = "0") @RequestParam("page") Optional<Integer> page) {
+        Pageable pageable = PageRequest.of(page.orElse(0), 8);
+        Map<List<ProductDTO>, Integer> listMap = productService.getProductsByShopAndStatusAndPagingForShop(id, status, pageable);
+        List<Object> list = new ArrayList<>();
+        listMap.forEach((productDTOS, integer) -> {
+            list.add(productDTOS);
+            list.add(integer);
+        });
+        if (list.isEmpty()) {
+            return new ResponseEntity<>("No product found!!!", HttpStatus.NOT_FOUND);
+        } else {
+            return ResponseEntity.ok(list);
+        }
+    }
+
+    @Operation(summary = "Get all available products by shop")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Load Products List", content = @Content(schema = @Schema(implementation = ProductDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @GetMapping("/{id}/products")
+    public ResponseEntity<?> getAllProductsByShopAndStatus(
+            @Parameter(description = "Shop ID", example = "1") @PathVariable("id") Integer id,
+            @Parameter(description = "Page number (start from 0)", example = "0") @RequestParam("page") Optional<Integer> page) {
         Pageable pageable = PageRequest.of(page.orElse(0), 30);
-        Map<List<ProductDTO>, Integer> listMap = productService.getProductsByShopAndStatusAndPaging(id, status, pageable);
+        Map<List<ProductDTO>, Integer> listMap = productService.getProductsByShopAndStatusAndPaging(id, true, pageable);
         List<Object> list = new ArrayList<>();
         listMap.forEach((productDTOS, integer) -> {
             list.add(productDTOS);
