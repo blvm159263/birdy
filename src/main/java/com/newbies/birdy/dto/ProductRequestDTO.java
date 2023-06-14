@@ -10,7 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 public class ProductRequestDTO {
 
-    private ProductDTO productDTO;
+//    private ProductDTO productDTO;
+    private String jsonProductDTO;
 
     private MultipartFile mainImage;
 

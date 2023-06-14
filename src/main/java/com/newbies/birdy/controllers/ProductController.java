@@ -1,5 +1,7 @@
 package com.newbies.birdy.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newbies.birdy.dto.ProductDTO;
 import com.newbies.birdy.dto.ProductRequestDTO;
 import com.newbies.birdy.services.FirebaseStorageService;
@@ -16,13 +18,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
+
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Tag(name = "Product API")
 @RestController
@@ -90,7 +96,7 @@ public class ProductController {
         try {
             ProductDTO product = productService.getProductById(id);
             return ResponseEntity.ok(product);
-        } catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>("No product found!!!", HttpStatus.NOT_FOUND);
         }
     }
@@ -211,29 +217,78 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createProduct(@RequestBody ProductRequestDTO productRequestDTO) {
+//    @PostMapping(value = "/test", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<?> test(@RequestBody MultipartFile mainImage) {
+//        if (mainImage != null) {
+//            return ResponseEntity.ok(mainImage.getOriginalFilename());
+//        } else {
+//            return new ResponseEntity<>("No product found!!!", HttpStatus.NOT_FOUND);
+//        }
+////        MultipartFile mainImage = request;
+////        MultipartFile[] subImages = productRequestDTO.getSubImages();
+////        List<Object> list = new ArrayList<>(Arrays.asList(mainImage, subImages));return ResponseEntity.ok(request);
+//    }
+
+    @PostMapping(value = "/test", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> test(
+            @RequestPart(value = "productDTO") String jsonString,
+            @RequestPart(value = "mainImage") MultipartFile mainImage,
+            @RequestPart(value = "subImages", required = false) MultipartFile[] subImages
+    ) {
+        try {
+            if (mainImage != null && jsonString != null) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                ProductDTO productDTO = objectMapper.readValue(jsonString, ProductDTO.class);
+
+                List<String> subImageFile = null;
+                if (subImages != null) {
+                    subImageFile = new ArrayList<>(Arrays.stream(subImages).map(MultipartFile::getOriginalFilename).toList());
+                    List<Object> list = new ArrayList<>(Arrays.asList(mainImage.getOriginalFilename(), subImageFile, productDTO));
+                    return ResponseEntity.ok(list);
+                }
+                else return ResponseEntity.ok("sub image null");
+
+            }
+            return new ResponseEntity<>("product inserted failed", HttpStatus.NOT_FOUND);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    @PostMapping(value = "/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> createProduct(
+            @RequestPart(value = "productDTO") String jsonString,
+            @RequestPart(value = "mainImage") MultipartFile mainImage,
+            @RequestPart(value = "subImages", required = false) MultipartFile[] subImages
+    ) {
         Integer productId;
         try {
-            String fileName = firebaseStorageService.uploadFile(productRequestDTO.getMainImage());
+            String fileName = firebaseStorageService.uploadFile(mainImage);
             String mainImgUrl = firebaseStorageService.getImageUrl(fileName);
-            productRequestDTO.getProductDTO().setImageMain(mainImgUrl);
-            productId = productService.addProduct(productRequestDTO.getProductDTO());
-            if(productId != null){
-                MultipartFile[] subImages = productRequestDTO.getSubImages();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            ProductDTO productDTO = objectMapper.readValue(jsonString, ProductDTO.class);
+            productDTO.setImageMain(mainImgUrl);
+
+            productId = productService.addProduct(productDTO);
+            if (productId != null && subImages != null) {
+//                MultipartFile[] subImages = productRequestDTO.getSubImages();
+//                if (subImages != null) {
                 String[] subImgUrls = new String[subImages.length];
-                for (int i = 0; i < productRequestDTO.getSubImages().length; i++) {
+                for (int i = 0; i < subImages.length; i++) {
                     fileName = firebaseStorageService.uploadFile(subImages[i]);
                     subImgUrls[i] = firebaseStorageService.getImageUrl(fileName);
                 }
                 productImageService.saveImages(subImgUrls, productId);
+//                }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        if(productId != null) {
+        if (productId != null) {
             return new ResponseEntity<>(productId, HttpStatus.CREATED);
-        }else{
+        } else {
             return new ResponseEntity<>("Product created failed!!!", HttpStatus.BAD_REQUEST);
         }
     }
