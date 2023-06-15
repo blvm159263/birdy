@@ -1,11 +1,14 @@
 package com.newbies.birdy.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -23,15 +26,6 @@ public class Address {
     @Column(name = "address",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", nullable = false)
     private String address;
 
-    @Column(name = "ward",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", length = 50, nullable = false)
-    private String ward;
-
-    @Column(name = "city",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", length = 50, nullable = false)
-    private String city;
-
-    @Column(name = "province",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", length = 50, nullable = false)
-    private String province;
-
     @Column(name = "isDefault", nullable = false)
     private Boolean isDefault;
 
@@ -42,5 +36,9 @@ public class Address {
     @JsonManagedReference
     @JoinColumn(name = "user_id", nullable = false)
     private User userAddress;
+
+    @OneToMany(mappedBy = "addressOrder", fetch = FetchType.LAZY)
+    @JsonBackReference
+    private List<Order> orderList;
 
 }

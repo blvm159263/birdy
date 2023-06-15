@@ -36,9 +36,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getPhoneNumber(), request.getPassword()));
         var account = accountRepository.findByPhoneNumberAndStatus(request.getPhoneNumber(), true)
                 .orElseThrow();
-        var jwtToken = jwtService.generateToken(account);
+        var jwtToken = jwtService.generateToken(account, account.getRole().name());
         var roleName = account.getRole().name();
-        return AuthenticationResponse.builder().token(jwtToken).roleName(roleName).build();
+        return AuthenticationResponse.builder().token(jwtToken).build();
     }
 
     @Override

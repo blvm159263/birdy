@@ -1,6 +1,7 @@
 package com.newbies.birdy.mapper;
 
 import com.newbies.birdy.dto.OrderDTO;
+import com.newbies.birdy.entities.Address;
 import com.newbies.birdy.entities.Order;
 import com.newbies.birdy.entities.PaymentMethod;
 import com.newbies.birdy.entities.Shipment;
@@ -16,6 +17,8 @@ public interface OrderMapper {
 
 
 
+    @Mapping(target = "address", source = "addressOrder.address")
+    @Mapping(target = "addressId", source = "addressOrder.id")
     @Mapping(target = "shipmentTypeName", source = "shipmentOrder.shipmentType.shipmentTypeName")
     @Mapping(target = "shipmentId", source = "shipmentOrder.id")
     @Mapping(target = "paymentTypeName", source = "paymentMethod.paymentType.paymentTypeName")
@@ -24,6 +27,7 @@ public interface OrderMapper {
     OrderDTO toDTO(Order order);
 
 
+    @Mapping(target = "addressOrder", source = "addressId", qualifiedByName = "mapAddress")
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "orderList", ignore = true)
     @Mapping(target = "orderDetailList", ignore = true)
@@ -35,6 +39,13 @@ public interface OrderMapper {
     @Named("mapShipment")
     default Shipment mapShipment(Integer id) {
         Shipment s = new Shipment();
+        s.setId(id);
+        return s;
+    }
+
+    @Named("mapAddress")
+    default Address mapAddress(Integer id) {
+        Address s = new Address();
         s.setId(id);
         return s;
     }

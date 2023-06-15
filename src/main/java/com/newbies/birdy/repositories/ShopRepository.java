@@ -18,4 +18,6 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
     Shop findByIdAndStatus(Integer id, Boolean status);
 
     Page<Shop> findByStatusAndShopNameContaining(Boolean status, String name, Pageable pageable);
+
+
 }

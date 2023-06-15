@@ -1,9 +1,13 @@
 package com.newbies.birdy.services.impl;
 
+import com.newbies.birdy.dto.ShipmentDTO;
 import com.newbies.birdy.dto.ShopDTO;
+import com.newbies.birdy.entities.Shipment;
 import com.newbies.birdy.entities.Shop;
 import com.newbies.birdy.exceptions.entity.EntityNotFoundException;
+import com.newbies.birdy.mapper.ShipmentMapper;
 import com.newbies.birdy.mapper.ShopMapper;
+import com.newbies.birdy.repositories.ShipmentRepository;
 import com.newbies.birdy.repositories.ShopRepository;
 import com.newbies.birdy.services.ShopService;
 import jakarta.transaction.Transactional;
@@ -22,6 +26,8 @@ import java.util.Map;
 public class ShopServiceImpl implements ShopService {
 
     private final ShopRepository shopRepository;
+
+    private final ShipmentRepository shipmentRepository;
 
     @Override
     public List<ShopDTO> listByShopName(String name, Boolean status) {
@@ -46,5 +52,19 @@ public class ShopServiceImpl implements ShopService {
         Page<Shop> shops = shopRepository.findByStatusAndShopNameContaining(status, name, pageable);
         pair.put(shops.stream().map(ShopMapper.INSTANCE::toDTO).toList(), shops.getTotalPages());
         return pair;
+    }
+
+    @Override
+    public String getShopAddress(Integer shopId) {
+        return shopRepository.findByIdAndStatus(shopId, true).getAddress();
+    }
+
+    @Override
+    public List<ShipmentDTO> listShipmentByShopId(Integer shopId, Boolean status) {
+        Shop shop = new Shop();
+        shop.setId(shopId);
+        List<Shipment> list = shipmentRepository.
+                findByShopShipmentAndStatus(shop, status);
+        return list.stream().map(ShipmentMapper.INSTANCE::toDTO).toList();
     }
 }
