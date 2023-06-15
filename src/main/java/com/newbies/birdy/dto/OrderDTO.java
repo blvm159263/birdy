@@ -16,7 +16,7 @@ public class OrderDTO {
 
     private Date createDate;
 
-    private Integer state;
+    private String state;
 
     private String comment;
 
@@ -31,5 +31,9 @@ public class OrderDTO {
     private Integer orderParentId;
 
     private String paymentStatus;
+
+    private Integer addressId;
+
+    private String address;
 
 }

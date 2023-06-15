@@ -11,4 +11,6 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     List<Order> findByPaymentMethodAndStatus(PaymentMethod paymentMethod, Boolean status);
+
+    List<Order> findByCodeAndStatus(String code, Boolean status);
 }

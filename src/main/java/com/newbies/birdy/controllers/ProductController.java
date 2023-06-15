@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newbies.birdy.dto.ProductDTO;
 import com.newbies.birdy.dto.ProductRequestDTO;
+import com.newbies.birdy.dto.ReviewDTO;
 import com.newbies.birdy.services.FirebaseStorageService;
 import com.newbies.birdy.services.ProductImageService;
 import com.newbies.birdy.services.ProductService;
+import com.newbies.birdy.services.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,7 +28,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -41,6 +46,8 @@ public class ProductController {
     private final ProductImageService productImageService;
 
     private final FirebaseStorageService firebaseStorageService;
+
+    private final ReviewService reviewService;
 
     @Operation(summary = "Get first 15 available products for landing page")
     @ApiResponses(value = {
@@ -290,6 +297,35 @@ public class ProductController {
             return new ResponseEntity<>(productId, HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>("Product created failed!!!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Operation(summary = "Get Product review by product id and paging")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Load Review List", content = @Content(schema = @Schema(implementation = ReviewDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @GetMapping("/review/{product-id}")
+    public ResponseEntity<?> getProductReview(@PathVariable("product-id") Integer productId,
+                                              @RequestParam("page") Optional<Integer> page) {
+        System.out.println(page);
+        Pageable pageable = PageRequest.of(page.orElse(0), 3);
+        Map<List<ReviewDTO>, Long> listMap = reviewService
+                .getReviewByPageAndProductIdAndStatus(pageable, productId, true);
+
+        List<Object> list = new ArrayList<>();
+
+        listMap.forEach((reviewDTOS, total) -> {
+            list.add(reviewDTOS);
+            list.add(total);
+        });
+
+        if (list.isEmpty()) {
+            return new ResponseEntity<>("No review found!!!", HttpStatus.NOT_FOUND);
+        } else {
+            return ResponseEntity.ok(list);
         }
     }
 }

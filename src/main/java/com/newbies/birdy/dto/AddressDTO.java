@@ -13,12 +13,6 @@ public class AddressDTO {
 
     private String address;
 
-    private String ward;
-
-    private String city;
-
-    private String province;
-
     private Boolean isDefault;
 
     private Integer userId;

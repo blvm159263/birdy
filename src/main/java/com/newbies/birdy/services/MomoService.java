@@ -2,12 +2,10 @@ package com.newbies.birdy.services;
 
 import com.newbies.birdy.dto.Response;
 
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-
 
 public interface MomoService {
 
@@ -19,7 +17,7 @@ public interface MomoService {
             String signature
     ) throws InvalidKeyException, NoSuchAlgorithmException, UnsupportedEncodingException;
 
-     Object getPaymentUrl(Long amount)
+     Object getPaymentUrl(Long amount, String orderId)
             throws InvalidKeyException,
             NoSuchAlgorithmException,
             IOException, UnsupportedEncodingException;

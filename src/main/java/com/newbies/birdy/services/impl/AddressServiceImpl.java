@@ -29,11 +29,16 @@ public class AddressServiceImpl implements AddressService {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Can not find user have id: " + userId));
 
-        addressDTO.setIsDefault(user.getAddressList() == null);
+        if(addressDTO.getIsDefault()){
+            user.getAddressList().forEach(address -> {
+                address.setIsDefault(false);
+            });
+            userRepository.save(user);
+        }
         addressDTO.setUserId(userId);
-        Address prev = AddressMapper.INSTANCE.toEntity(addressDTO);
-        prev.setStatus(true);
-        Address address = addressRepository.save(prev);
+        Address preCreate = AddressMapper.INSTANCE.toEntity(addressDTO);
+        preCreate.setStatus(true);
+        Address address = addressRepository.save(preCreate);
         if(address != null){
             return address.getId();
         }
@@ -53,5 +58,17 @@ public class AddressServiceImpl implements AddressService {
         }
 
         return result;
+    }
+
+    @Override
+    public String getAddressById(Integer addressId) {
+        return addressRepository.findById(addressId)
+                .orElseThrow(() -> new EntityNotFoundException("Can not find address have id: " + addressId)).getAddress();
+    }
+
+    @Override
+    public AddressDTO getAddressDTOById(Integer addressId) {
+        return AddressMapper.INSTANCE.toDTO(addressRepository.findById(addressId)
+                .orElseThrow(() -> new EntityNotFoundException("Can not find address have id: " + addressId)));
     }
 }

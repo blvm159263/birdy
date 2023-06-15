@@ -12,4 +12,11 @@ public interface UserService {
     public UserDTO getUserById(Integer id);
 
     UserDTO getUserByAccount(Account account);
+    UserDTO getUserByPhoneNumber(String phoneNumber, Boolean status);
+
+    AddressDTO getUserDefaultAddress(Integer id);
+
+    List<AddressDTO> getUserAddressList(Integer id);
+
+
 }
