@@ -16,7 +16,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     List<Product> findTop15ByRatingGreaterThanAndStateAndStatusOrderByRatingDesc(Integer rating, Integer state, Boolean status);
 
-    Page<Product> findByStatusAndState(Boolean status, Integer state, Pageable page);
+    Page<Product> findByStatusAndStateOrderByRatingDesc(Boolean status, Integer state, Pageable page);
 
     //------------- search and sort (all products) ------------------
     Page<Product> findByProductNameIgnoreCaseContainingAndStateAndStatus(String name, Integer state, Boolean status, Pageable pageable);
@@ -45,4 +45,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     Page<Product> findByShopProductAndStateAndStatus(Shop shop, Integer state, Boolean status, Pageable pageable);
 
     Page<Product> findByShopProductAndStatus(Shop shop, Boolean status, Pageable pageable);
+
+    Page<Product> findByShopProductAndStateAndCategoryAndStatus(Shop shop, Integer state, Category category, Boolean status, Pageable pageable);
 }
