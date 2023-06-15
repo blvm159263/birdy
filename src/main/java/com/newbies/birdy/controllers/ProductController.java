@@ -1,9 +1,7 @@
 package com.newbies.birdy.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newbies.birdy.dto.ProductDTO;
-import com.newbies.birdy.dto.ProductRequestDTO;
 import com.newbies.birdy.dto.ReviewDTO;
 import com.newbies.birdy.services.FirebaseStorageService;
 import com.newbies.birdy.services.ProductImageService;
@@ -20,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Tag(name = "Product API")
 @RestController
