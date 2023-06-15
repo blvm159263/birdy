@@ -43,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Map<List<ProductDTO>, Integer> getAllProductsByStatusAndPaging(Boolean status, Pageable pageable) {
         Map<List<ProductDTO>, Integer> pair = new HashMap<>();
-        Page<Product> pageList = productRepository.findByStatusAndState(status, 2, pageable);
+        Page<Product> pageList = productRepository.findByStatusAndStateOrderByRatingDesc(status, 1, pageable);
         pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
         return pair;
     }
@@ -73,6 +73,16 @@ public class ProductServiceImpl implements ProductService {
         Shop shop = shopRepository.findByIdAndStatus(shopId, true);
         Map<List<ProductDTO>, Integer> pair = new HashMap<>();
         Page<Product> pageList = productRepository.findByShopProductAndStatus(shop, status, pageable);
+        pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
+        return pair;
+    }
+
+    @Override
+    public Map<List<ProductDTO>, Integer> getProductsByShopInCategoryAndStatusAndPaging(Integer shopId, Integer categoryId, Boolean status, Pageable pageable) {
+        Shop shop = shopRepository.findByIdAndStatus(shopId, true);
+        Category category = categoryRepository.findByIdAndStatus(categoryId, true);
+        Map<List<ProductDTO>, Integer> pair = new HashMap<>();
+        Page<Product> pageList = productRepository.findByShopProductAndStateAndCategoryAndStatus(shop, 1, category, status, pageable);
         pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
         return pair;
     }

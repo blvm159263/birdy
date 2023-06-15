@@ -115,7 +115,7 @@ public class ProductController {
             @Parameter(description = "Price range start", example = "10.45") @RequestParam("from") Optional<Double> from,
             @Parameter(description = "Price range end", example = "30.65") @RequestParam("to") Optional<Double> to,
             @Parameter(description = "Page number (start from 0)", example = "0") @RequestParam("page") Optional<Integer> page) {
-        Pageable pageable = PageRequest.of(page.orElse(0), 30);
+        Pageable pageable = PageRequest.of(page.orElse(0), 30, Sort.by("rating").descending());
         Map<List<ProductDTO>, Integer> listMap = productService.searchAndSortProductsWithPaging(search.orElse(""),
                 rating.orElse(-1), from.orElse((double) -1), to.orElse((double) -1), true, pageable);
         List<Object> list = new ArrayList<>();
@@ -229,31 +229,31 @@ public class ProductController {
 ////        List<Object> list = new ArrayList<>(Arrays.asList(mainImage, subImages));return ResponseEntity.ok(request);
 //    }
 
-    @PostMapping(value = "/test", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> test(
-            @RequestPart(value = "productDTO") String jsonString,
-            @RequestPart(value = "mainImage") MultipartFile mainImage,
-            @RequestPart(value = "subImages", required = false) MultipartFile[] subImages
-    ) {
-        try {
-            if (mainImage != null && jsonString != null) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                ProductDTO productDTO = objectMapper.readValue(jsonString, ProductDTO.class);
-
-                List<String> subImageFile = null;
-                if (subImages != null) {
-                    subImageFile = new ArrayList<>(Arrays.stream(subImages).map(MultipartFile::getOriginalFilename).toList());
-                    List<Object> list = new ArrayList<>(Arrays.asList(mainImage.getOriginalFilename(), subImageFile, productDTO));
-                    return ResponseEntity.ok(list);
-                }
-                else return ResponseEntity.ok("sub image null");
-
-            }
-            return new ResponseEntity<>("product inserted failed", HttpStatus.NOT_FOUND);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    @PostMapping(value = "/test", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+//    public ResponseEntity<?> test(
+//            @RequestPart(value = "productDTO") String jsonString,
+//            @RequestPart(value = "mainImage") MultipartFile mainImage,
+//            @RequestPart(value = "subImages", required = false) MultipartFile[] subImages
+//    ) {
+//        try {
+//            if (mainImage != null && jsonString != null) {
+//                ObjectMapper objectMapper = new ObjectMapper();
+//                ProductDTO productDTO = objectMapper.readValue(jsonString, ProductDTO.class);
+//
+//                List<String> subImageFile = null;
+//                if (subImages != null) {
+//                    subImageFile = new ArrayList<>(Arrays.stream(subImages).map(MultipartFile::getOriginalFilename).toList());
+//                    List<Object> list = new ArrayList<>(Arrays.asList(mainImage.getOriginalFilename(), subImageFile, productDTO));
+//                    return ResponseEntity.ok(list);
+//                }
+//                else return ResponseEntity.ok("sub image null");
+//
+//            }
+//            return new ResponseEntity<>("product inserted failed", HttpStatus.NOT_FOUND);
+//        } catch (JsonProcessingException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
 
     @PostMapping(value = "/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
