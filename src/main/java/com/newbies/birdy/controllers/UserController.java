@@ -41,7 +41,7 @@ public class UserController  {
         if(aid == 0){
             return ResponseEntity.badRequest().body("Can't create address!");
         }else{
-            return new ResponseEntity<>("Created successfully!", HttpStatus.CREATED);
+            return new ResponseEntity<>(aid, HttpStatus.CREATED);
         }
     }
 

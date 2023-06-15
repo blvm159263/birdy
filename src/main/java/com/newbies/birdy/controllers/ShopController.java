@@ -1,6 +1,7 @@
 package com.newbies.birdy.controllers;
 
 import com.newbies.birdy.dto.ProductDTO;
+import com.newbies.birdy.dto.ShipmentDTO;
 import com.newbies.birdy.dto.ShopDTO;
 import com.newbies.birdy.exceptions.ObjectException;
 import com.newbies.birdy.services.ProductService;
@@ -124,6 +125,23 @@ public class ShopController {
         if (list.isEmpty()) {
             return new ResponseEntity<>("No product found!!!", HttpStatus.NOT_FOUND);
         } else {
+            return ResponseEntity.ok(list);
+        }
+    }
+
+    @Operation(summary = "Get all shipment by shop")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return shipment list", content = @Content(schema = @Schema(implementation = ShipmentDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @GetMapping("/shipment/{shop-id}")
+    public ResponseEntity<?> listShipmentByShopId(@PathVariable(name = "shop-id") Integer shopId){
+        List<ShipmentDTO> list = shopService.listShipmentByShopId(shopId, true);
+        if(list.isEmpty()){
+            return new ResponseEntity<>("Not found any shipment", HttpStatus.NOT_FOUND);
+        }else{
             return ResponseEntity.ok(list);
         }
     }

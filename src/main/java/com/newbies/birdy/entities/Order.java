@@ -24,7 +24,7 @@ public class Order {
     @Column(name = "id", nullable = false, updatable = false)
     private Integer id;
 
-    @Column(name = "code",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", length = 20, nullable = false)
+    @Column(name = "code",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", nullable = false)
     private String code;
 
     @Column(name = "create_date", nullable = false)

@@ -1,5 +1,6 @@
 package com.newbies.birdy.services;
 
+import com.newbies.birdy.dto.ShipmentDTO;
 import com.newbies.birdy.dto.ShopDTO;
 import org.springframework.data.domain.Pageable;
 
@@ -17,4 +18,6 @@ public interface ShopService {
     Map<List<ShopDTO>, Integer> listByNameAndStatusWithPaging(String name, Boolean status, Pageable pageable);
 
     String getShopAddress(Integer shopId);
+
+    List<ShipmentDTO> listShipmentByShopId(Integer shopId, Boolean status);
 }

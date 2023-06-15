@@ -1,5 +1,6 @@
 package com.newbies.birdy.controllers;
 
+import com.newbies.birdy.dto.OrderCreateRequestDTO;
 import com.newbies.birdy.dto.OrderDTO;
 import com.newbies.birdy.dto.OrderDetailDTO;
 import com.newbies.birdy.exceptions.ObjectException;
@@ -81,7 +82,43 @@ public class OrderController {
         }
         Double price = shipmentService.getShipmentPriceById(shipmentId, true);
         Long distance = googleDistantMatrixService.getData(shopAddress, address);
+        System.out.println(distance);
         Double shipmentPrice = price * (distance / 1000);
         return ResponseEntity.ok(shipmentPrice);
     }
+
+
+    @Operation(summary = "Create list order")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Not Found!", content = @Content(schema = @Schema(implementation = ObjectException.class))),
+            @ApiResponse(responseCode = "500", description = "Internal error"),
+            @ApiResponse(responseCode = "200", description = "Return Order code"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")
+    })
+    @PostMapping("")
+    public ResponseEntity<?> createOrder(@RequestBody OrderCreateRequestDTO orderRequest) {
+        List<OrderDTO> list = orderRequest.getOrderList();
+        List<OrderDetailDTO> listDetail = orderRequest.getOrderDetailList();
+//        String code = null;
+//        Order parentOrder = orderService.createParentOrder(list.get(0));
+//        System.out.println("tao xong order");
+//        if(parentOrder != null){
+//            orderService.saveDetailforOrder(parentOrder, listDetail);
+//            list.remove(0);
+//            list.forEach(o ->{
+//                o.setCode(parentOrder.getCode());
+//                Order order = orderService.createOtherOrder(o, parentOrder);
+//                orderService.saveDetailforOrder(order, listDetail);
+//            });
+//            code = parentOrder.getCode();
+//        }
+        String code = orderService.createOrder(list, listDetail);
+
+        if(!code.isEmpty()) {
+            return ResponseEntity.ok(code);
+        }else{
+            return new ResponseEntity<>("Creat order failed", HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

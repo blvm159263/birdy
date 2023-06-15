@@ -11,4 +11,6 @@ public interface AddressService {
     List<AddressDTO> getAllUserAddress(Integer userId, Boolean status);
 
     String getAddressById(Integer addressId);
+
+    AddressDTO getAddressDTOById(Integer addressId);
 }

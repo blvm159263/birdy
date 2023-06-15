@@ -15,6 +15,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Transactional
 @Service
 @RequiredArgsConstructor
@@ -47,6 +49,22 @@ public class UserServiceImpl implements UserService {
         Address address = user.getAddressList().stream().filter(Address::getIsDefault).findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("Default address not found"));
         return AddressMapper.INSTANCE.toDTO(address);
+    }
+
+    @Override
+    public List<AddressDTO> getUserAddressList(Integer id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        List<Address> addressList = user.getAddressList();
+
+        List<AddressDTO> result = null;
+
+        if (addressList != null){
+            result = addressList.stream().map(AddressMapper.INSTANCE::toDTO).toList();
+        }
+        return result;
+
     }
 
 }

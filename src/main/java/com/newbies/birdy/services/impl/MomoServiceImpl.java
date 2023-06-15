@@ -1,7 +1,11 @@
 package com.newbies.birdy.services.impl;
 
 import com.newbies.birdy.dto.Response;
+import com.newbies.birdy.entities.Order;
+import com.newbies.birdy.entities.PaymentStatus;
+import com.newbies.birdy.repositories.OrderRepository;
 import com.newbies.birdy.services.MomoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -17,10 +21,15 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class MomoServiceImpl implements MomoService {
+
+    private final OrderRepository orderRepository;
+
     @Value("${MOMO_PARTNER_CODE}")
     private String partnerCode;
     @Value("${MOMO_ACCESS_KEY}")
@@ -52,10 +61,11 @@ public class MomoServiceImpl implements MomoService {
      * @throws UnsupportedEncodingException
      */
     @Override
-    public Object getPaymentUrl(Long amount)
+    public Object getPaymentUrl(Long amount, String orderId)
             throws InvalidKeyException,
             NoSuchAlgorithmException,
             IOException, UnsupportedEncodingException {
+        requestId = UUID.randomUUID().toString();
 
         String requestRawData = new StringBuilder()
                 .append("accessKey").append("=").append(accessKey).append("&")
@@ -131,7 +141,6 @@ public class MomoServiceImpl implements MomoService {
             String payType, String responseTime, String extraData,
             String signature
     ) throws InvalidKeyException, NoSuchAlgorithmException, UnsupportedEncodingException {
-
         String requestRawData = new StringBuilder()
                 .append("accessKey").append("=").append(accessKey).append("&")
                 .append("amount").append("=").append(amount).append("&")
@@ -157,6 +166,9 @@ public class MomoServiceImpl implements MomoService {
                     .build();
             return res;
         }
+        List<Order> orderList = orderRepository.findByCodeAndStatus(orderId, true);
+        orderList.forEach(o -> o.setPaymentStatus(Enum.valueOf(PaymentStatus.class, "PAID")));
+        orderRepository.saveAll(orderList);
         return Response.builder()
                 .message(message)
                 .status(resultCode)

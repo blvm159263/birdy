@@ -16,7 +16,7 @@ import java.net.http.HttpResponse;
 @Service
 @RequiredArgsConstructor
 public class GoogleDistantMatrixServiceImpl implements GoogleDistantMatrixService {
-    private static final String API_KEY = "AIzaSyDbo6xs1jnG-z3kadD83OsxlUt4iOLZyg0";
+    private static final String API_KEY = "AIzaSyAQWd5r8phR8BPqONxIqBZVT1jp-ODnwvY";
 
     @Override
     public Long getData(String source, String destination) throws Exception {
