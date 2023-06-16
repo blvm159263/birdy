@@ -2,6 +2,7 @@ package com.newbies.birdy.services.impl;
 
 import com.newbies.birdy.dto.OrderDTO;
 import com.newbies.birdy.dto.OrderDetailDTO;
+import com.newbies.birdy.dto.OrderManageDTO;
 import com.newbies.birdy.entities.*;
 import com.newbies.birdy.exceptions.entity.EntityNotFoundException;
 import com.newbies.birdy.mapper.OrderDetailMapper;
@@ -10,12 +11,11 @@ import com.newbies.birdy.repositories.*;
 import com.newbies.birdy.services.OrderService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Transactional
 @Service
@@ -31,6 +31,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
 
     private final ShipmentRepository shipmentRepository;
+    private final ShopRepository shopRepository;
 
     @Override
     public List<OrderDTO> getAllOrdersByUserIdAndStatus(Integer userId, Boolean status) {
@@ -44,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order createParentOrder(OrderDTO orderDTO){
+    public Order createParentOrder(OrderDTO orderDTO) {
         Order order = OrderMapper.INSTANCE.toEntity(orderDTO);
         order.setCreateDate(new Date());
         order.setCode(UUID.randomUUID().toString());
@@ -53,14 +54,14 @@ public class OrderServiceImpl implements OrderService {
         order.setPaymentStatus(Enum.valueOf(PaymentStatus.class, "PENDING"));
         order.setOrder(null);
         Order savedOrder = orderRepository.save(order);
-        if(savedOrder != null){
+        if (savedOrder != null) {
             return savedOrder;
         }
         return null;
     }
 
     @Override
-    public Order createOtherOrder(OrderDTO orderDTO, Order parentOrder){
+    public Order createOtherOrder(OrderDTO orderDTO, Order parentOrder) {
         Order order = OrderMapper.INSTANCE.toEntity(orderDTO);
         order.setCreateDate(new Date());
         order.setStatus(true);
@@ -68,11 +69,50 @@ public class OrderServiceImpl implements OrderService {
         order.setPaymentStatus(Enum.valueOf(PaymentStatus.class, "PENDING"));
         order.setOrder(parentOrder);
         Order savedOrder = orderRepository.save(order);
-        if(savedOrder != null){
+        if (savedOrder != null) {
             return savedOrder;
         }
         return null;
     }
+
+    @Override
+    public Map<List<OrderManageDTO>, Integer> getAllOrdersByShopId(Integer shopId, Pageable pageable) {
+        Map<List<OrderManageDTO>, Integer> pair = new HashMap<>();
+
+        Shop shop = shopRepository.findByIdAndStatus(shopId, true);
+        List<Shipment> shipmentList = shipmentRepository.findByShopShipmentAndStatus(shop, true);
+        Page<Order> orderList = orderRepository.findByShipmentOrderInAndStatus(shipmentList, true, pageable);
+
+//        orderList.getContent().sort(new Comparator<Order>() {
+//            @Override
+//            public int compare(Order o1, Order o2) {
+//                if (o1.getState() == o2.getState()) {
+//                    return o1.getCreateDate().compareTo(o2.getCreateDate());
+//                } else return o1.getState().compareTo(o2.getState());
+//            }
+//        });
+
+        List<OrderManageDTO> orderManageDTOList = new ArrayList<>();
+        for (Order order : orderList.getContent()) {
+            OrderManageDTO orderManageDTO = new OrderManageDTO();
+            orderManageDTO.setId(order.getId());
+            orderManageDTO.setCustomer(order.getPaymentMethod().getUserPaymentMethod().getFullName());
+
+            List<Double> listPrice = order.getOrderDetailList().stream().map(OrderDetail::getPrice).toList();
+            Double total = listPrice.stream().reduce(0.0, Double::sum);
+            orderManageDTO.setTotal(total);
+
+            orderManageDTO.setShipType(order.getShipmentOrder().getShipmentType().getShipmentTypeName());
+            orderManageDTO.setPaymentMethod(String.valueOf(order.getPaymentMethod().getPaymentType().getPaymentTypeName()));
+            orderManageDTO.setPaymentStatus(String.valueOf(order.getPaymentStatus()));
+            orderManageDTO.setState(String.valueOf(order.getState()));
+
+            orderManageDTOList.add(orderManageDTO);
+        }
+        pair.put(orderManageDTOList, orderList.getTotalPages());
+        return pair;
+    }
+
     @Override
     public String createOrder(List<OrderDTO> orderDTOList, List<OrderDetailDTO> orderDetailDTOList) {
         List<Order> orderList = new ArrayList<>(orderDTOList.stream().map(o -> {
@@ -111,7 +151,7 @@ public class OrderServiceImpl implements OrderService {
         for (OrderDetailDTO orderDetailDTO : orderDetailDTOList) {
             Product product = productRepository.findById(orderDetailDTO.getProductId())
                     .orElseThrow(() -> new EntityNotFoundException("Product not found!"));
-            if(product.getShopProduct().getId().equals(shopId)) {
+            if (product.getShopProduct().getId().equals(shopId)) {
                 OrderDetail orderDetail = OrderDetailMapper.INSTANCE.toEntity(orderDetailDTO);
                 orderDetail.setStatus(true);
                 orderDetail.setRating(0);

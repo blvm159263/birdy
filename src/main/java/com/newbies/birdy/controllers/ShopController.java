@@ -1,14 +1,8 @@
 package com.newbies.birdy.controllers;
 
-import com.newbies.birdy.dto.AccountDTO;
-import com.newbies.birdy.dto.ProductDTO;
-import com.newbies.birdy.dto.ShipmentDTO;
-import com.newbies.birdy.dto.ShopDTO;
+import com.newbies.birdy.dto.*;
 import com.newbies.birdy.exceptions.ObjectException;
-import com.newbies.birdy.services.AccountService;
-import com.newbies.birdy.services.ProductService;
-import com.newbies.birdy.services.ShopService;
-import com.newbies.birdy.services.UserService;
+import com.newbies.birdy.services.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,6 +29,7 @@ public class ShopController {
     private final ShopService shopService;
     private final ProductService productService;
     private final AccountService accountService;
+    private final OrderService orderService;
     private final UserService userService;
 
     @Operation(summary = "Search shop by given name")
@@ -239,4 +234,31 @@ public class ShopController {
             return ResponseEntity.ok(list);
         }
     }
+
+    @Operation(summary = "Gets all order by shop")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return orders list", content = @Content(schema = @Schema(implementation = ShipmentDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @GetMapping("/{shop-id}/orders")
+    public ResponseEntity<?> listOrdersByShopId(
+            @Parameter(example = "1", description = "Shop Id") @PathVariable(name = "shop-id") Integer shopId,
+            @Parameter(example = "0", description = "Page number (start from 0)") @RequestParam("page") Optional<Integer> page){
+        Pageable pageable = PageRequest.of(page.orElse(0), 3);
+        Map<List<OrderManageDTO>, Integer> listMap = orderService.getAllOrdersByShopId(shopId, pageable);
+
+        List<Object> list = new ArrayList<>();
+        listMap.forEach((orderManageDTOS, integer) -> {
+            list.add(orderManageDTOS);
+            list.add(integer);
+        });
+        if(list.isEmpty()){
+            return new ResponseEntity<>("No orders found", HttpStatus.NOT_FOUND);
+        }else{
+            return ResponseEntity.ok(list);
+        }
+    }
+
 }
