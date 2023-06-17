@@ -4,6 +4,7 @@ import com.newbies.birdy.dto.ProductDTO;
 import com.newbies.birdy.entities.Category;
 import com.newbies.birdy.entities.Product;
 import com.newbies.birdy.entities.Shop;
+import com.newbies.birdy.exceptions.entity.EntityNotFoundException;
 import com.newbies.birdy.mapper.ProductMapper;
 import com.newbies.birdy.repositories.CategoryRepository;
 import com.newbies.birdy.repositories.ProductRepository;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Transactional
 @Service
@@ -57,11 +59,13 @@ public class ProductServiceImpl implements ProductService {
         return pair;
     }
 
+    /* shop */
+
     @Override
-    public Map<List<ProductDTO>, Integer> getProductsByShopAndStatusAndPaging(Integer shopId, Boolean status, Pageable pageable) {
+    public Map<List<ProductDTO>, Integer> getProductsByShopAndStatusAndPaging(Integer shopId, String search, Boolean status, Pageable pageable) {
         Shop shop = shopRepository.findByIdAndStatus(shopId, true);
         Map<List<ProductDTO>, Integer> pair = new HashMap<>();
-        Page<Product> pageList = productRepository.findByShopProductAndStateAndStatus(shop, 1, status, pageable);
+        Page<Product> pageList = productRepository.findByShopProductAndProductNameContainingIgnoreCaseAndStateAndStatus(shop, search, 1, status, pageable);
         pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
         return pair;
     }
@@ -69,23 +73,25 @@ public class ProductServiceImpl implements ProductService {
 
     // get all shop products for shop management
     @Override
-    public Map<List<ProductDTO>, Integer> getProductsByShopAndStatusAndPagingForShop(Integer shopId, Boolean status, Pageable pageable) {
+    public Map<List<ProductDTO>, Integer> getProductsByShopAndStatusAndPagingForShop(Integer shopId, String search, Boolean status, Pageable pageable) {
         Shop shop = shopRepository.findByIdAndStatus(shopId, true);
         Map<List<ProductDTO>, Integer> pair = new HashMap<>();
-        Page<Product> pageList = productRepository.findByShopProductAndStatus(shop, status, pageable);
+        Page<Product> pageList = productRepository.findByShopProductAndProductNameContainingIgnoreCaseAndStatus(shop, search,status, pageable);
         pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
         return pair;
     }
 
     @Override
-    public Map<List<ProductDTO>, Integer> getProductsByShopInCategoryAndStatusAndPaging(Integer shopId, Integer categoryId, Boolean status, Pageable pageable) {
+    public Map<List<ProductDTO>, Integer> getProductsByShopInCategoryAndStatusAndPaging(Integer shopId, String search, Integer categoryId, Boolean status, Pageable pageable) {
         Shop shop = shopRepository.findByIdAndStatus(shopId, true);
         Category category = categoryRepository.findByIdAndStatus(categoryId, true);
         Map<List<ProductDTO>, Integer> pair = new HashMap<>();
-        Page<Product> pageList = productRepository.findByShopProductAndStateAndCategoryAndStatus(shop, 1, category, status, pageable);
+        Page<Product> pageList = productRepository.findByShopProductAndProductNameContainingIgnoreCaseAndStateAndCategoryAndStatus(shop, search, 1, category, status, pageable);
         pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
         return pair;
     }
+
+    /* shop */
 
     @Override
     public Map<List<ProductDTO>, Integer> searchAndSortProductsWithPaging(String search, Integer rating, Double from, Double to, Boolean status, Pageable pageable) {
@@ -125,10 +131,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Integer addProduct(ProductDTO productDTO) {
+    public Integer saveProduct(ProductDTO productDTO) {
         Product product = ProductMapper.INSTANCE.toEntity(productDTO);
         product.setStatus(true);
         return productRepository.save(product).getId();
+    }
+
+    @Override
+    public Boolean deleteProduct(Integer id) {
+        Product product = productRepository.findByIdAndStatus(id, true).orElseThrow(() -> new EntityNotFoundException("Product ID doesn't exist"));
+        product.setStatus(false);
+        return productRepository.save(product).getStatus();
     }
 
 

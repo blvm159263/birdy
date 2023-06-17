@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 @Transactional
@@ -83,14 +84,37 @@ public class OrderServiceImpl implements OrderService {
         List<Shipment> shipmentList = shipmentRepository.findByShopShipmentAndStatus(shop, true);
         Page<Order> orderList = orderRepository.findByShipmentOrderInAndStatus(shipmentList, true, pageable);
 
-//        orderList.getContent().sort(new Comparator<Order>() {
-//            @Override
-//            public int compare(Order o1, Order o2) {
-//                if (o1.getState() == o2.getState()) {
-//                    return o1.getCreateDate().compareTo(o2.getCreateDate());
-//                } else return o1.getState().compareTo(o2.getState());
-//            }
-//        });
+        List<OrderManageDTO> orderManageDTOList = new ArrayList<>();
+        for (Order order : orderList.getContent()) {
+            OrderManageDTO orderManageDTO = new OrderManageDTO();
+            orderManageDTO.setId(order.getId());
+            orderManageDTO.setCustomer(order.getPaymentMethod().getUserPaymentMethod().getFullName());
+
+            List<Double> listPrice = order.getOrderDetailList().stream().map(OrderDetail::getPrice).toList();
+            Double total = listPrice.stream().reduce(0.0, Double::sum);
+
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+            orderManageDTO.setTotal(decimalFormat.format(total));
+
+            orderManageDTO.setShipType(order.getShipmentOrder().getShipmentType().getShipmentTypeName());
+            orderManageDTO.setPaymentMethod(String.valueOf(order.getPaymentMethod().getPaymentType().getPaymentTypeName()));
+            orderManageDTO.setPaymentStatus(String.valueOf(order.getPaymentStatus()));
+            orderManageDTO.setState(String.valueOf(order.getState()));
+
+            orderManageDTOList.add(orderManageDTO);
+        }
+        pair.put(orderManageDTOList, orderList.getTotalPages());
+        return pair;
+    }
+
+    @Override
+    public Map<List<OrderManageDTO>, Integer> getAllOrdersByShopIdAndState(Integer shopId, String state, Pageable pageable) {
+        Map<List<OrderManageDTO>, Integer> pair = new HashMap<>();
+        OrderState orderState = Enum.valueOf(OrderState.class, state.toUpperCase());
+
+        Shop shop = shopRepository.findByIdAndStatus(shopId, true);
+        List<Shipment> shipmentList = shipmentRepository.findByShopShipmentAndStatus(shop, true);
+        Page<Order> orderList = orderRepository.findByShipmentOrderInAndStatusAndState(shipmentList, true, orderState, pageable);
 
         List<OrderManageDTO> orderManageDTOList = new ArrayList<>();
         for (Order order : orderList.getContent()) {
@@ -100,7 +124,9 @@ public class OrderServiceImpl implements OrderService {
 
             List<Double> listPrice = order.getOrderDetailList().stream().map(OrderDetail::getPrice).toList();
             Double total = listPrice.stream().reduce(0.0, Double::sum);
-            orderManageDTO.setTotal(total);
+
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+            orderManageDTO.setTotal(decimalFormat.format(total));
 
             orderManageDTO.setShipType(order.getShipmentOrder().getShipmentType().getShipmentTypeName());
             orderManageDTO.setPaymentMethod(String.valueOf(order.getPaymentMethod().getPaymentType().getPaymentTypeName()));

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class OrderManageDTO {
     private Integer id;
     private String customer;
-    private Double total;
+    private String total;
     private String shipType;
     private String paymentMethod;
     private String paymentStatus;

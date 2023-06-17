@@ -3,6 +3,7 @@ package com.newbies.birdy.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newbies.birdy.dto.ProductDTO;
 import com.newbies.birdy.dto.ReviewDTO;
+import com.newbies.birdy.exceptions.entity.EntityNotFoundException;
 import com.newbies.birdy.services.FirebaseStorageService;
 import com.newbies.birdy.services.ProductImageService;
 import com.newbies.birdy.services.ProductService;
@@ -282,6 +283,13 @@ public class ProductController {
 //    }
 
 
+    @Operation(summary = "Create new product")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Product created"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
     @PostMapping(value = "/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> createProduct(
             @RequestPart(value = "productDTO") String jsonString,
@@ -297,7 +305,7 @@ public class ProductController {
             ProductDTO productDTO = objectMapper.readValue(jsonString, ProductDTO.class);
             productDTO.setImageMain(mainImgUrl);
 
-            productId = productService.addProduct(productDTO);
+            productId = productService.saveProduct(productDTO);
             if (productId != null && subImages != null) {
 //                MultipartFile[] subImages = productRequestDTO.getSubImages();
 //                if (subImages != null) {
@@ -316,6 +324,67 @@ public class ProductController {
             return new ResponseEntity<>(productId, HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>("Product created failed!!!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    @Operation(summary = "Update existing product")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Product created"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @PutMapping(value = "/update/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> updateProduct(
+            @PathVariable("id") Integer id,
+            @RequestPart(value = "productDTO") String jsonString,
+            @RequestPart(value = "mainImage") MultipartFile mainImage,
+            @RequestPart(value = "subImages", required = false) MultipartFile[] subImages
+    ) {
+        Integer productId;
+        try {
+            String fileName = firebaseStorageService.uploadFile(mainImage);
+            String mainImgUrl = firebaseStorageService.getImageUrl(fileName);
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            ProductDTO productDTO = objectMapper.readValue(jsonString, ProductDTO.class);
+
+            productDTO.setId(id);
+            productDTO.setImageMain(mainImgUrl);
+
+            productId = productService.saveProduct(productDTO);
+            if (productId != null && subImages != null) {
+                String[] subImgUrls = new String[subImages.length];
+                for (int i = 0; i < subImages.length; i++) {
+                    fileName = firebaseStorageService.uploadFile(subImages[i]);
+                    subImgUrls[i] = firebaseStorageService.getImageUrl(fileName);
+                }
+                productImageService.saveImages(subImgUrls, productId);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if (productId != null) {
+            return new ResponseEntity<>(productId, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Product created failed!!!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Operation(summary = "Delete existing product")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Product created"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable("id") Integer id) {
+        if (!productService.deleteProduct(id)) {
+            return new ResponseEntity<>("Product deleted successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Product deleted failed", HttpStatus.BAD_REQUEST);
         }
     }
 
