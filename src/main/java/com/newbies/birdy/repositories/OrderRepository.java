@@ -1,9 +1,6 @@
 package com.newbies.birdy.repositories;
 
-import com.newbies.birdy.entities.Order;
-import com.newbies.birdy.entities.OrderState;
-import com.newbies.birdy.entities.PaymentMethod;
-import com.newbies.birdy.entities.Shipment;
+import com.newbies.birdy.entities.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +21,12 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     Page<Order> findByShipmentOrderInAndStatusAndState(List<Shipment> shipmentList, Boolean status, OrderState state, Pageable pageable);
 
     Optional<Order> findByIdAndStatus(Integer orderId, Boolean b);
+
+    Page<Order> findByShipmentOrderInAndPaymentMethodInAndStatus(List<Shipment> shipmentList, List<PaymentMethod> paymentMethodList, Boolean status, Pageable pageable);
+
+    Page<Order> findByShipmentOrderInAndPaymentMethodInAndStateAndStatus(List<Shipment> shipmentList, List<PaymentMethod> paymentMethodList, OrderState state, Boolean status, Pageable pageable);
+
+    Page<Order> findByShipmentOrderInAndPaymentMethodInAndPaymentStatusAndStatus(List<Shipment> shipmentList, List<PaymentMethod> paymentMethodList, PaymentStatus paymentStatus, Boolean status, Pageable pageable);
+
+    Page<Order> findByShipmentOrderInAndPaymentMethodInAndPaymentStatusAndStateAndStatus(List<Shipment> shipmentList, List<PaymentMethod> paymentMethodList, PaymentStatus paymentStatus, OrderState state, Boolean status, Pageable pageable);
 }

@@ -5,10 +5,12 @@ import com.newbies.birdy.dto.OrderDetailDTO;
 import com.newbies.birdy.dto.OrderManageDTO;
 import com.newbies.birdy.entities.Order;
 import com.newbies.birdy.entities.OrderState;
+import com.newbies.birdy.entities.PaymentStatus;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface OrderService {
 
@@ -23,6 +25,8 @@ public interface OrderService {
     Order createOtherOrder(OrderDTO orderDTO, Order parentOrder);
 
     Map<List<OrderManageDTO>, Integer> getAllOrdersByShopId(Integer shopId, Pageable pageable);
+
+    Map<List<OrderManageDTO>, Integer> getAllOrderByShop(Integer shopId, String search, String state, String paymentStatus, Pageable pageable);
 
     Map<List<OrderManageDTO>, Integer> getAllOrdersByShopIdAndState(Integer shopId, String state, Pageable pageable);
 
