@@ -76,7 +76,7 @@ public class ProductServiceImpl implements ProductService {
     public Map<List<ProductDTO>, Integer> getProductsByShopAndStatusAndPagingForShop(Integer shopId, String search, Boolean status, Pageable pageable) {
         Shop shop = shopRepository.findByIdAndStatus(shopId, true);
         Map<List<ProductDTO>, Integer> pair = new HashMap<>();
-        Page<Product> pageList = productRepository.findByShopProductAndProductNameContainingIgnoreCaseAndStatus(shop, search,status, pageable);
+        Page<Product> pageList = productRepository.findByShopProductAndProductNameContainingIgnoreCaseAndStatus(shop, search, status, pageable);
         pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
         return pair;
     }
@@ -87,6 +87,16 @@ public class ProductServiceImpl implements ProductService {
         Category category = categoryRepository.findByIdAndStatus(categoryId, true);
         Map<List<ProductDTO>, Integer> pair = new HashMap<>();
         Page<Product> pageList = productRepository.findByShopProductAndProductNameContainingIgnoreCaseAndStateAndCategoryAndStatus(shop, search, 1, category, status, pageable);
+        pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
+        return pair;
+    }
+
+    @Override
+    public Map<List<ProductDTO>, Integer> getProductsByShopInCategoryAndStatusAndPagingForShop(Integer shopId, String search, Integer categoryId, Boolean status, Pageable pageable) {
+        Shop shop = shopRepository.findByIdAndStatus(shopId, true);
+        Category category = categoryRepository.findByIdAndStatus(categoryId, true);
+        Map<List<ProductDTO>, Integer> pair = new HashMap<>();
+        Page<Product> pageList = productRepository.findByShopProductAndProductNameContainingIgnoreCaseAndCategoryAndStatus(shop, search, category, status, pageable);
         pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
         return pair;
     }

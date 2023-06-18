@@ -49,4 +49,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     Optional<Product> findByIdAndStatus(Integer id, Boolean status);
 
     Page<Product> findByShopProductAndProductNameContainingIgnoreCaseAndStateAndCategoryAndStatus(Shop shop, String search, Integer state, Category category, Boolean status, Pageable pageable);
+
+    Page<Product> findByShopProductAndProductNameContainingIgnoreCaseAndCategoryAndStatus(Shop shop, String search, Category category, Boolean status, Pageable pageable);
 }

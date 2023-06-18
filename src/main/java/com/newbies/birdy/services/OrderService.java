@@ -4,6 +4,7 @@ import com.newbies.birdy.dto.OrderDTO;
 import com.newbies.birdy.dto.OrderDetailDTO;
 import com.newbies.birdy.dto.OrderManageDTO;
 import com.newbies.birdy.entities.Order;
+import com.newbies.birdy.entities.OrderState;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -24,4 +25,6 @@ public interface OrderService {
     Map<List<OrderManageDTO>, Integer> getAllOrdersByShopId(Integer shopId, Pageable pageable);
 
     Map<List<OrderManageDTO>, Integer> getAllOrdersByShopIdAndState(Integer shopId, String state, Pageable pageable);
+
+    Boolean editOrderState(Integer orderId, String state);
 }

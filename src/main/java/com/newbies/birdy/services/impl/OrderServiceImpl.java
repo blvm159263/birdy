@@ -140,6 +140,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Boolean editOrderState(Integer orderId, String state) {
+        Order order = orderRepository.findByIdAndStatus(orderId, true).orElseThrow(() -> new EntityNotFoundException("Order ID not found"));
+        OrderState orderState = Enum.valueOf(OrderState.class, state.toUpperCase().trim());
+        order.setState(orderState);
+        return orderRepository.save(order).getState().toString().equals(state.toUpperCase().trim());
+    }
+
+    @Override
     public String createOrder(List<OrderDTO> orderDTOList, List<OrderDetailDTO> orderDetailDTOList) {
         List<Order> orderList = new ArrayList<>(orderDTOList.stream().map(o -> {
             Order order = OrderMapper.INSTANCE.toEntity(o);
