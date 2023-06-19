@@ -13,5 +13,5 @@ public interface ShipmentRepository  extends JpaRepository<Shipment, Integer> {
 
     Optional<Shipment> findByIdAndStatus(Integer id, Boolean status);
 
-    List<Shipment> findByShopShipmentAndStatus(Shop shop, Boolean status);
+    List<Shipment> findByShopShipmentAndStatus(Shop shops, Boolean status);
 }
