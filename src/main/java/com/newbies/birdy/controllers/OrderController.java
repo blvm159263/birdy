@@ -3,6 +3,7 @@ package com.newbies.birdy.controllers;
 import com.newbies.birdy.dto.OrderCreateRequestDTO;
 import com.newbies.birdy.dto.OrderDTO;
 import com.newbies.birdy.dto.OrderDetailDTO;
+import com.newbies.birdy.entities.OrderState;
 import com.newbies.birdy.exceptions.ObjectException;
 import com.newbies.birdy.services.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,13 +11,16 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
+@Tag(name = "Order API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/orders")
@@ -81,9 +85,9 @@ public class OrderController {
             return new ResponseEntity<>("Can not find shop or address", HttpStatus.NOT_FOUND);
         }
         Double price = shipmentService.getShipmentPriceById(shipmentId, true);
-        Long distance = googleDistantMatrixService.getData(shopAddress, address);
+        Long distance =googleDistantMatrixService.getData(shopAddress, address);
         System.out.println(distance);
-        Double shipmentPrice = price * (distance / 1000);
+        Double shipmentPrice = price * distance / 1000;
         return ResponseEntity.ok(shipmentPrice);
     }
 
@@ -119,6 +123,23 @@ public class OrderController {
         }else{
             return new ResponseEntity<>("Creat order failed", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @Operation(summary = "Edit order state by order id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Not Found!", content = @Content(schema = @Schema(implementation = OrderDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Internal error"),
+            @ApiResponse(responseCode = "200", description = "Return Order code"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")
+    })
+    @PatchMapping("/edit/{order-id}")
+    public ResponseEntity<?> editOrderState(@PathVariable(name = "order-id") Integer orderId,
+                                             @RequestParam(name = "state") String state) {
+        Boolean edited = orderService.editOrderState(orderId, state);
+        if(edited){
+            return new ResponseEntity<>("Edit order state successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Edit order failed", HttpStatus.BAD_REQUEST);
     }
 
 }

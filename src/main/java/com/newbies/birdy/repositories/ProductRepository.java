@@ -42,11 +42,13 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     Page<Product> findByCategoryAndStateAndStatus(Category category, Integer state, Boolean status, Pageable pageable);
 
-    Page<Product> findByShopProductAndStateAndStatus(Shop shop, Integer state, Boolean status, Pageable pageable);
+    Page<Product> findByShopProductAndProductNameContainingIgnoreCaseAndStateAndStatus(Shop shop, String search, Integer state, Boolean status, Pageable pageable);
 
-    Page<Product> findByShopProductAndStatus(Shop shop, Boolean status, Pageable pageable);
+    Page<Product> findByShopProductAndProductNameContainingIgnoreCaseAndStatus(Shop shop, String search, Boolean status, Pageable pageable);
 
     Optional<Product> findByIdAndStatus(Integer id, Boolean status);
 
-    Page<Product> findByShopProductAndStateAndCategoryAndStatus(Shop shop, Integer state, Category category, Boolean status, Pageable pageable);
+    Page<Product> findByShopProductAndProductNameContainingIgnoreCaseAndStateAndCategoryAndStatus(Shop shop, String search, Integer state, Category category, Boolean status, Pageable pageable);
+
+    Page<Product> findByShopProductAndProductNameContainingIgnoreCaseAndCategoryAndStatus(Shop shop, String search, Category category, Boolean status, Pageable pageable);
 }

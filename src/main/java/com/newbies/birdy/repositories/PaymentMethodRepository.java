@@ -11,4 +11,8 @@ import java.util.List;
 public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, Integer> {
 
     List<PaymentMethod> findByUserPaymentMethodAndStatus(User user, Boolean status);
+
+    PaymentMethod findByIdAndStatus(Integer id, Boolean status);
+
+    List<PaymentMethod> findByUserPaymentMethodInAndStatus(List<User> userList, Boolean status);
 }
