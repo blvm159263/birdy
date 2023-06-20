@@ -3,7 +3,6 @@ package com.newbies.birdy.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newbies.birdy.dto.ProductDTO;
 import com.newbies.birdy.dto.ReviewDTO;
-import com.newbies.birdy.exceptions.entity.EntityNotFoundException;
 import com.newbies.birdy.services.FirebaseStorageService;
 import com.newbies.birdy.services.ProductImageService;
 import com.newbies.birdy.services.ProductService;

@@ -3,7 +3,6 @@ package com.newbies.birdy.controllers;
 import com.newbies.birdy.dto.OrderCreateRequestDTO;
 import com.newbies.birdy.dto.OrderDTO;
 import com.newbies.birdy.dto.OrderDetailDTO;
-import com.newbies.birdy.entities.OrderState;
 import com.newbies.birdy.exceptions.ObjectException;
 import com.newbies.birdy.services.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @Tag(name = "Order API")
 @RestController
@@ -69,7 +67,7 @@ public class OrderController {
         return ResponseEntity.ok(list);
     }
 
-    @Operation(summary = "Get shipment price by shop id, address id and shipment id")
+    @Operation(summary = "Get shipment price by shop id, address id and shipment id!")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Not Found!", content = @Content(schema = @Schema(implementation = ObjectException.class))),
             @ApiResponse(responseCode = "500", description = "Internal error"),
