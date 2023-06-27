@@ -23,7 +23,7 @@ public class ProductImageServiceImpl implements ProductImageService {
 
     @Override
     public void saveImages(String[] images, Integer productId) {
-        try{
+        try {
             for (String image : images) {
                 ProductImage productImage = new ProductImage();
                 productImage.setProductImg(productRepository.findById(productId).orElseThrow());
@@ -32,7 +32,7 @@ public class ProductImageServiceImpl implements ProductImageService {
                 productImageRepository.save(productImage);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
 
@@ -43,5 +43,14 @@ public class ProductImageServiceImpl implements ProductImageService {
         Product product = productRepository.findById(productId).orElseThrow();
         List<ProductImage> list = productImageRepository.findByProductImgAndStatus(product, true);
         return list.stream().map(ProductImageMapper.INSTANCE::toDTO).toList();
+    }
+
+    @Override
+    public void deleteImages(Integer productId) {
+        Product product = productRepository.findById(productId).orElseThrow();
+        List<ProductImage> list = productImageRepository.findByProductImgAndStatus(product, true);
+        if (!list.isEmpty()) {
+            productImageRepository.deleteAll(list);
+        }
     }
 }
