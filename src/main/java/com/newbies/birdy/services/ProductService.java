@@ -12,7 +12,7 @@ public interface ProductService {
 
     List<ProductDTO> getFirst15ProductsWithStatusTrue();
 
-    Map<List<ProductDTO>, Integer> getAllProductsByStatusAndPaging(Boolean status, Pageable pageable);
+    Map<List<ProductDTO>, Integer> getAllProductsByStatusAndPaging(Boolean status, Integer quantity, Pageable pageable);
 
     Map<List<ProductDTO>, Integer> getProductsByCategoryAndStatusAndPaging(Integer categoryId, Boolean status, Pageable pageable);
 
