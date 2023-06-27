@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping("api/v1/product-images")
 public class ProductImageController {
 
-    private ProductImageService productImageService;
+    private final ProductImageService productImageService;
 
     @Operation(summary = "Get product image by product ID")
     @ApiResponses(value = {
@@ -32,10 +32,12 @@ public class ProductImageController {
     public ResponseEntity<?> getProductImagesByProductId(@Parameter(description = "Product ID", example = "1") @PathVariable("id") Integer id) {
         try {
             List<ProductImageDTO> list = productImageService.getAllImageByProductId(id);
-            if (list.isEmpty()) return new ResponseEntity<>("No Images found!!!", HttpStatus.NOT_FOUND);;
+            if (list.isEmpty()) {
+                return new ResponseEntity<>("No Images found!!!", HttpStatus.NOT_FOUND);
+            }
             return ResponseEntity.ok(list);
         } catch (Exception e) {
-            return new ResponseEntity<>("No Images found!!!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 }
