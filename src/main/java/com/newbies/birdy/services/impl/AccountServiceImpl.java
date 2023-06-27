@@ -2,6 +2,7 @@ package com.newbies.birdy.services.impl;
 
 import com.newbies.birdy.dto.AccountDTO;
 import com.newbies.birdy.entities.Account;
+import com.newbies.birdy.exceptions.entity.EntityNotFoundException;
 import com.newbies.birdy.mapper.AccountMapper;
 import com.newbies.birdy.repositories.AccountRepository;
 import com.newbies.birdy.services.AccountService;
@@ -25,5 +26,14 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountDTO getById(Integer id) {
         return AccountMapper.INSTANCE.toDTO(accountRepository.findById(id).orElseThrow(() -> new RuntimeException("ID account not found")));
+    }
+
+    @Override
+    public Boolean updatePassword(String phoneNumber, String password) {
+        Account account = accountRepository
+                .findByPhoneNumberAndStatus(phoneNumber, true)
+                .orElseThrow(() -> new EntityNotFoundException("Account not found!"));
+        account.setPassword(password);
+        return accountRepository.save(account).getId() != null;
     }
 }

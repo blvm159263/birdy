@@ -69,6 +69,12 @@ public class FirebaseStorageServiceImpl implements FirebaseStorageService {
         Blob blob = storage.create(blobInfo, Files.readAllBytes(filePath));
 
         log.info("File " + filePath + " uploaded to bucket " + bucketName + " as " + objectName);
+
+        if (file.delete()) {
+            log.info("Temporary file " + filePath + " deleted.");
+        } else {
+            log.warn("Failed to delete temporary file " + filePath);
+        }
         return  objectName;
     }
 
