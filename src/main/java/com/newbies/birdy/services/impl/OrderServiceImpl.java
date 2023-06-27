@@ -77,39 +77,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Map<List<OrderManageDTO>, Integer> getAllOrdersByShopId(Integer shopId, Pageable pageable) {
-        Map<List<OrderManageDTO>, Integer> pair = new HashMap<>();
-
-        Shop shop = shopRepository.findByIdAndStatus(shopId, true);
-        List<Shipment> shipmentList = shipmentRepository.findByShopShipmentAndStatus(shop, true);
-        Page<Order> orderList = orderRepository.findByShipmentOrderInAndStatus(shipmentList, true, pageable);
-
-        List<OrderManageDTO> orderManageDTOList = new ArrayList<>();
-        for (Order order : orderList.getContent()) {
-            OrderManageDTO orderManageDTO = new OrderManageDTO();
-            orderManageDTO.setId(order.getId());
-            orderManageDTO.setCustomer(order.getPaymentMethod().getUserPaymentMethod().getFullName());
-
-            List<Double> listPrice = order.getOrderDetailList().stream().map(OrderDetail::getPrice).toList();
-            Double total = listPrice.stream().reduce(0.0, Double::sum);
-
-            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
-            orderManageDTO.setTotal(decimalFormat.format(total));
-
-            orderManageDTO.setShipType(order.getShipmentOrder().getShipmentType().getShipmentTypeName());
-            orderManageDTO.setPaymentMethod(String.valueOf(order.getPaymentMethod().getPaymentType().getPaymentTypeName()));
-            orderManageDTO.setPaymentStatus(String.valueOf(order.getPaymentStatus()));
-            orderManageDTO.setState(String.valueOf(order.getState()));
-
-            orderManageDTOList.add(orderManageDTO);
-        }
-        pair.put(orderManageDTOList, orderList.getTotalPages());
-        return pair;
-    }
-
-    @Override
-    public Map<List<OrderManageDTO>, Integer> getAllOrderByShop(Integer shopId, String search, String state, String paymentStatus, Pageable pageable) {
-        Map<List<OrderManageDTO>, Integer> pair = new HashMap<>();
+    public Map<List<OrderManageDTO>, Long> getAllOrdersByShopId(Integer shopId, String search, List<String> payment, List<String> state, Pageable pageable) {
+        Map<List<OrderManageDTO>, Long> pair = new HashMap<>();
 
         List<User> userList = userRepository.findByFullNameContainingIgnoreCaseAndStatus(search, true);
         List<PaymentMethod> paymentMethodList = paymentMethodRepository.findByUserPaymentMethodInAndStatus(userList, true);
@@ -118,22 +87,74 @@ public class OrderServiceImpl implements OrderService {
         List<Shipment> shipmentList = shipmentRepository.findByShopShipmentAndStatus(shop, true);
 
         Page<Order> orderList;
-        if (!state.isEmpty()) {
-            OrderState orderState = Enum.valueOf(OrderState.class, state.toUpperCase().trim());
-            if (paymentStatus.isEmpty()) {
-                orderList = orderRepository.findByShipmentOrderInAndPaymentMethodInAndStateAndStatus(shipmentList, paymentMethodList, orderState, true, pageable);
+        if (state != null) {
+            List<OrderState> orderStateList = state.stream().map(s -> Enum.valueOf(OrderState.class, s.toUpperCase().trim())).toList();
+            if (payment == null) {
+                orderList = orderRepository.findByShipmentOrderInAndPaymentMethodInAndStateInAndStatus(shipmentList, paymentMethodList, orderStateList, true, pageable);
             } else {
-                PaymentStatus payment = Enum.valueOf(PaymentStatus.class, paymentStatus.toUpperCase().trim());
-                orderList = orderRepository.findByShipmentOrderInAndPaymentMethodInAndPaymentStatusAndStateAndStatus(shipmentList, paymentMethodList, payment, orderState, true, pageable);
+                List<PaymentStatus> paymentStatusList = payment.stream().map(s -> Enum.valueOf(PaymentStatus.class, s.toUpperCase().trim())).toList();
+                orderList = orderRepository.findByShipmentOrderInAndPaymentMethodInAndPaymentStatusInAndStateInAndStatus(shipmentList, paymentMethodList, paymentStatusList, orderStateList, true, pageable);
             }
         } else {
-            if (!paymentStatus.isEmpty()) {
-                PaymentStatus payment = Enum.valueOf(PaymentStatus.class, paymentStatus.toUpperCase().trim());
-                orderList = orderRepository.findByShipmentOrderInAndPaymentMethodInAndPaymentStatusAndStatus(shipmentList, paymentMethodList, payment, true, pageable);
+            if (payment != null) {
+                List<PaymentStatus> paymentStatusList = payment.stream().map(s -> Enum.valueOf(PaymentStatus.class, s.toUpperCase().trim())).toList();
+                orderList = orderRepository.findByShipmentOrderInAndPaymentMethodInAndPaymentStatusInAndStatus(shipmentList, paymentMethodList, paymentStatusList, true, pageable);
             } else {
                 orderList = orderRepository.findByShipmentOrderInAndPaymentMethodInAndStatus(shipmentList, paymentMethodList, true, pageable);
             }
         }
+
+        List<OrderManageDTO> orderManageDTOList = new ArrayList<>();
+        for (Order order : orderList.getContent()) {
+            OrderManageDTO orderManageDTO = new OrderManageDTO();
+            orderManageDTO.setId(order.getId());
+            orderManageDTO.setCustomer(order.getPaymentMethod().getUserPaymentMethod().getFullName());
+
+            List<Double> listPrice = order.getOrderDetailList().stream().map(OrderDetail::getPrice).toList();
+            Double total = listPrice.stream().reduce(0.0, Double::sum);
+
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+            orderManageDTO.setTotal(decimalFormat.format(total));
+
+            orderManageDTO.setShipType(order.getShipmentOrder().getShipmentType().getShipmentTypeName());
+            orderManageDTO.setPaymentMethod(order.getPaymentMethod().getPaymentType().getPaymentTypeName().toUpperCase());
+            orderManageDTO.setPaymentStatus(String.valueOf(order.getPaymentStatus()));
+            orderManageDTO.setState(String.valueOf(order.getState()));
+
+            orderManageDTOList.add(orderManageDTO);
+        }
+        pair.put(orderManageDTOList, orderList.getTotalElements());
+        return pair;
+    }
+
+    /*
+    @Override
+    public Map<List<OrderManageDTO>, Long> getAllOrderByShop(Integer shopId, String search, Pageable pageable) {
+        Map<List<OrderManageDTO>, Long> pair = new HashMap<>();
+
+        List<User> userList = userRepository.findByFullNameContainingIgnoreCaseAndStatus(search, true);
+        List<PaymentMethod> paymentMethodList = paymentMethodRepository.findByUserPaymentMethodInAndStatus(userList, true);
+
+        Shop shop = shopRepository.findByIdAndStatus(shopId, true);
+        List<Shipment> shipmentList = shipmentRepository.findByShopShipmentAndStatus(shop, true);
+
+        Page<Order> orderList = orderRepository.findByShipmentOrderInAndPaymentMethodInAndStatus(shipmentList, paymentMethodList, true, pageable);;
+//        if (!state.isEmpty()) {
+//            OrderState orderState = Enum.valueOf(OrderState.class, state.toUpperCase().trim());
+//            if (paymentStatus.isEmpty()) {
+//                orderList = orderRepository.findByShipmentOrderInAndPaymentMethodInAndStateAndStatus(shipmentList, paymentMethodList, orderState, true, pageable);
+//            } else {
+//                PaymentStatus payment = Enum.valueOf(PaymentStatus.class, paymentStatus.toUpperCase().trim());
+//                orderList = orderRepository.findByShipmentOrderInAndPaymentMethodInAndPaymentStatusAndStateAndStatus(shipmentList, paymentMethodList, payment, orderState, true, pageable);
+//            }
+//        } else {
+//            if (!paymentStatus.isEmpty()) {
+//                PaymentStatus payment = Enum.valueOf(PaymentStatus.class, paymentStatus.toUpperCase().trim());
+//                orderList = orderRepository.findByShipmentOrderInAndPaymentMethodInAndPaymentStatusAndStatus(shipmentList, paymentMethodList, payment, true, pageable);
+//            } else {
+//                orderList = orderRepository.findByShipmentOrderInAndPaymentMethodInAndStatus(shipmentList, paymentMethodList, true, pageable);
+//            }
+//        }
 
 
         List<OrderManageDTO> orderManageDTOList = new ArrayList<>();
@@ -155,8 +176,46 @@ public class OrderServiceImpl implements OrderService {
 
             orderManageDTOList.add(orderManageDTO);
         }
-        pair.put(orderManageDTOList, orderList.getTotalPages());
+        pair.put(orderManageDTOList, orderList.getTotalElements());
         return pair;
+    }
+
+     */
+
+    @Override
+    public List<OrderManageDTO> getAllOrderByShop(Integer shopId, String search) {
+
+        List<User> userList = userRepository.findByFullNameContainingIgnoreCaseAndStatus(search, true);
+        List<PaymentMethod> paymentMethodList = paymentMethodRepository.findByUserPaymentMethodInAndStatus(userList, true);
+
+        Shop shop = shopRepository.findByIdAndStatus(shopId, true);
+        List<Shipment> shipmentList = shipmentRepository.findByShopShipmentAndStatus(shop, true);
+
+        List<Order> orderList = orderRepository.findByShipmentOrderInAndPaymentMethodInAndStatus(shipmentList, paymentMethodList, true);
+
+
+        List<OrderManageDTO> orderManageDTOList = new ArrayList<>();
+        for (Order order : orderList) {
+            OrderManageDTO orderManageDTO = new OrderManageDTO();
+            orderManageDTO.setId(order.getId());
+            orderManageDTO.setCustomer(order.getPaymentMethod().getUserPaymentMethod().getFullName());
+
+            List<Double> listPrice = order.getOrderDetailList().stream()
+                    .map(detail -> detail.getPrice() * detail.getQuantity())
+                    .toList();
+            Double total = listPrice.stream().reduce(0.0, Double::sum);
+
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+            orderManageDTO.setTotal(decimalFormat.format(total));
+
+            orderManageDTO.setShipType(order.getShipmentOrder().getShipmentType().getShipmentTypeName());
+            orderManageDTO.setPaymentMethod(String.valueOf(order.getPaymentMethod().getPaymentType().getPaymentTypeName()));
+            orderManageDTO.setPaymentStatus(String.valueOf(order.getPaymentStatus()));
+            orderManageDTO.setState(String.valueOf(order.getState()));
+
+            orderManageDTOList.add(orderManageDTO);
+        }
+        return orderManageDTOList;
     }
 
     @Override

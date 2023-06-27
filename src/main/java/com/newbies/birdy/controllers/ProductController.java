@@ -374,7 +374,7 @@ public class ProductController {
 
     @Operation(summary = "Delete existing product")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Product created"),
+            @ApiResponse(responseCode = "200", description = "Product deleted"),
             @ApiResponse(responseCode = "404", description = "Not found"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal error")

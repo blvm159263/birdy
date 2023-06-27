@@ -24,9 +24,11 @@ public interface OrderService {
 
     Order createOtherOrder(OrderDTO orderDTO, Order parentOrder);
 
-    Map<List<OrderManageDTO>, Integer> getAllOrdersByShopId(Integer shopId, Pageable pageable);
+    Map<List<OrderManageDTO>, Long> getAllOrdersByShopId(Integer shopId, String search, List<String> payment, List<String> state, Pageable pageable);
 
-    Map<List<OrderManageDTO>, Integer> getAllOrderByShop(Integer shopId, String search, String state, String paymentStatus, Pageable pageable);
+//    Map<List<OrderManageDTO>, Long> getAllOrderByShop(Integer shopId, String search, Pageable pageable);
+
+    List<OrderManageDTO> getAllOrderByShop(Integer shopId, String search);
 
     Map<List<OrderManageDTO>, Integer> getAllOrdersByShopIdAndState(Integer shopId, String state, Pageable pageable);
 

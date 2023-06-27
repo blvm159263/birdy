@@ -39,11 +39,11 @@ public class ShopController {
             @ApiResponse(responseCode = "500", description = "Internal error")
     })
     @GetMapping("/search")
-    public ResponseEntity<?> searchShopByName(@RequestParam String name){
+    public ResponseEntity<?> searchShopByName(@RequestParam String name) {
         List<ShopDTO> list = shopService.listByShopName(name, true);
-        if(list == null){
+        if (list == null) {
             return new ResponseEntity<>("Not found any shop", HttpStatus.NOT_FOUND);
-        }else{
+        } else {
             return ResponseEntity.ok(list);
         }
     }
@@ -55,7 +55,7 @@ public class ShopController {
             @ApiResponse(responseCode = "500", description = "Internal error")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<?> getShopById(@PathVariable(name = "id") Integer id){
+    public ResponseEntity<?> getShopById(@PathVariable(name = "id") Integer id) {
         return ResponseEntity.ok(shopService.getShopById(id));
     }
 
@@ -66,7 +66,7 @@ public class ShopController {
             @ApiResponse(responseCode = "500", description = "Internal error")
     })
     @GetMapping("/detail/{id}")
-    public ResponseEntity<?> getShopDetailById(@PathVariable(name = "id") Integer id){
+    public ResponseEntity<?> getShopDetailById(@PathVariable(name = "id") Integer id) {
         ShopDTO shop = shopService.getShopById(id);
         AccountDTO account = accountService.getById(shop.getAccountId());
 //        UserDTO user = userService.getUserByAccount(AccountMapper.INSTANCE.toEntity(account));
@@ -81,11 +81,11 @@ public class ShopController {
             @ApiResponse(responseCode = "500", description = "Internal error")
     })
     @GetMapping("")
-    public ResponseEntity<?> listAll(){
+    public ResponseEntity<?> listAll() {
         List<ShopDTO> list = shopService.listAllShop(true);
-        if(list == null){
+        if (list == null) {
             return new ResponseEntity<>("Not found any shop", HttpStatus.NOT_FOUND);
-        }else{
+        } else {
             return ResponseEntity.ok(list);
         }
     }
@@ -130,7 +130,7 @@ public class ShopController {
             @Parameter(description = "Search Products", example = "bird") @RequestParam("search") Optional<String> search,
             @Parameter(description = "Page number (start from 0)", example = "0") @RequestParam("page") Optional<Integer> page) {
         Pageable pageable = PageRequest.of(page.orElse(0), 8);
-        Map<List<ProductDTO>, Integer> listMap = productService.getProductsByShopAndStatusAndPagingForShop(id,search.orElse(""), true, pageable);
+        Map<List<ProductDTO>, Integer> listMap = productService.getProductsByShopAndStatusAndPagingForShop(id, search.orElse(""), true, pageable);
         List<Object> list = new ArrayList<>();
         listMap.forEach((productDTOS, integer) -> {
             list.add(productDTOS);
@@ -156,7 +156,7 @@ public class ShopController {
             @Parameter(description = "Search Products", example = "a") @RequestParam("search") Optional<String> search,
             @Parameter(description = "Page number (start from 0)", example = "0") @RequestParam("page") Optional<Integer> page) {
         Pageable pageable = PageRequest.of(page.orElse(0), 30, Sort.by("rating").descending());
-        Map<List<ProductDTO>, Integer> listMap = productService.getProductsByShopAndStatusAndPaging(id, search.orElse(""),true, pageable);
+        Map<List<ProductDTO>, Integer> listMap = productService.getProductsByShopAndStatusAndPaging(id, search.orElse(""), true, pageable);
         List<Object> list = new ArrayList<>();
         listMap.forEach((productDTOS, integer) -> {
             list.add(productDTOS);
@@ -182,7 +182,7 @@ public class ShopController {
             @Parameter(description = "Search Products", example = "a") @RequestParam("search") Optional<String> search,
             @Parameter(description = "Page number (start from 0)", example = "0") @RequestParam("page") Optional<Integer> page) {
         Pageable pageable = PageRequest.of(page.orElse(0), 30, Sort.by("id").descending());
-        Map<List<ProductDTO>, Integer> listMap = productService.getProductsByShopAndStatusAndPaging(id, search.orElse(""),true, pageable);
+        Map<List<ProductDTO>, Integer> listMap = productService.getProductsByShopAndStatusAndPaging(id, search.orElse(""), true, pageable);
         List<Object> list = new ArrayList<>();
         listMap.forEach((productDTOS, integer) -> {
             list.add(productDTOS);
@@ -209,7 +209,7 @@ public class ShopController {
             @Parameter(description = "Search Products", example = "bird") @RequestParam("search") Optional<String> search,
             @Parameter(description = "Page number (start from 0)", example = "0") @RequestParam("page") Optional<Integer> page) {
         Pageable pageable = PageRequest.of(page.orElse(0), 8, Sort.by("id").descending());
-        Map<List<ProductDTO>, Integer> listMap = productService.getProductsByShopAndStatusAndPagingForShop(id,search.orElse(""), true, pageable);
+        Map<List<ProductDTO>, Integer> listMap = productService.getProductsByShopAndStatusAndPagingForShop(id, search.orElse(""), true, pageable);
         List<Object> list = new ArrayList<>();
         listMap.forEach((productDTOS, integer) -> {
             list.add(productDTOS);
@@ -284,49 +284,11 @@ public class ShopController {
             @ApiResponse(responseCode = "500", description = "Internal error")
     })
     @GetMapping("/shipment/{shop-id}")
-    public ResponseEntity<?> listShipmentByShopId(@PathVariable(name = "shop-id") Integer shopId){
+    public ResponseEntity<?> listShipmentByShopId(@PathVariable(name = "shop-id") Integer shopId) {
         List<ShipmentDTO> list = shopService.listShipmentByShopId(shopId, true);
-        if(list.isEmpty()){
+        if (list.isEmpty()) {
             return new ResponseEntity<>("Not found any shipment", HttpStatus.NOT_FOUND);
-        }else{
-            return ResponseEntity.ok(list);
-        }
-    }
-
-
-    @Operation(summary = "Gets all order by shop + paging")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Return orders list", content = @Content(schema = @Schema(implementation = OrderManageDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Not found"),
-            @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "500", description = "Internal error")
-    })
-    @GetMapping("/{shop-id}/orders")
-    public ResponseEntity<?> listOrdersByShopId(
-            @Parameter(example = "1", description = "Shop Id") @PathVariable(name = "shop-id") Integer shopId,
-            @Parameter(example = "asc", description = "Sort asc or desc by id (desc = get latest orders first)") @RequestParam("sort") String sort,
-            @Parameter(description = "Search by customer name") @RequestParam("search") Optional<String> search,
-            @Parameter(example = "done", description = "Order state") @RequestParam("status") Optional<String> state,
-            @Parameter(example = "paid", description = "Payment status") @RequestParam("payment") Optional<String> payment,
-            @Parameter(example = "0", description = "Page number (start from 0)") @RequestParam("page") Optional<Integer> page){
-
-        Pageable pageable;
-        if (sort.equals("desc")) {
-            pageable = PageRequest.of(page.orElse(0), 3, Sort.by("id").descending());
         } else {
-            pageable = PageRequest.of(page.orElse(0), 3, Sort.by("id").ascending());
-        }
-
-        Map<List<OrderManageDTO>, Integer> listMap = orderService.getAllOrderByShop(shopId, search.orElse(""), state.orElse(""), payment.orElse(""), pageable);
-
-        List<Object> list = new ArrayList<>();
-        listMap.forEach((orderManageDTOS, integer) -> {
-            list.add(orderManageDTOS);
-            list.add(integer);
-        });
-        if(list.isEmpty()){
-            return new ResponseEntity<>("No orders found", HttpStatus.NOT_FOUND);
-        }else{
             return ResponseEntity.ok(list);
         }
     }
@@ -342,47 +304,61 @@ public class ShopController {
 //    @GetMapping("/{shop-id}/orders")
 //    public ResponseEntity<?> listOrdersByShopId(
 //            @Parameter(example = "1", description = "Shop Id") @PathVariable(name = "shop-id") Integer shopId,
-//            @Parameter(example = "0", description = "Page number (start from 0)") @RequestParam("page") Optional<Integer> page){
-//        Pageable pageable = PageRequest.of(page.orElse(0), 3, Sort.by("id").descending());
-//        Map<List<OrderManageDTO>, Integer> listMap = orderService.getAllOrdersByShopId(shopId, pageable);
+//            @Parameter(description = "Search by customer name") @RequestParam("search") Optional<String> search) {
 //
-//        List<Object> list = new ArrayList<>();
-//        listMap.forEach((orderManageDTOS, integer) -> {
-//            list.add(orderManageDTOS);
-//            list.add(integer);
-//        });
-//        if(list.isEmpty()){
+////        Pageable pageable = PageRequest.of(page.orElse(0), 3, Sort.by("id").ascending());
+//
+////        Map<List<OrderManageDTO>, Long> listMap = orderService.getAllOrderByShop(shopId, search.orElse(""), pageable);
+//
+////        List<Object> list = new ArrayList<>();
+////        listMap.forEach((orderManageDTOS, integer) -> {
+////            list.add(orderManageDTOS);
+////            list.add(integer);
+////        });
+//        List<OrderManageDTO> list = orderService.getAllOrderByShop(shopId, search.orElse(""));
+//        if (list.isEmpty()) {
 //            return new ResponseEntity<>("No orders found", HttpStatus.NOT_FOUND);
-//        }else{
+//        } else {
 //            return ResponseEntity.ok(list);
 //        }
 //    }
 
-//    @Operation(summary = "Gets all order by shop by STATE + paging")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "Return orders list", content = @Content(schema = @Schema(implementation = OrderManageDTO.class))),
-//            @ApiResponse(responseCode = "404", description = "Not found"),
-//            @ApiResponse(responseCode = "400", description = "Bad request"),
-//            @ApiResponse(responseCode = "500", description = "Internal error")
-//    })
-//    @GetMapping("/{shop-id}/orders/state/{state}")
-//    public ResponseEntity<?> listOrdersByShopIdAndState(
-//            @Parameter(example = "1", description = "Shop Id") @PathVariable(name = "shop-id") Integer shopId,
-//            @Parameter(example = "pending", description = "Order state") @PathVariable(name = "state") String state,
-//            @Parameter(example = "0", description = "Page number (start from 0)") @RequestParam("page") Optional<Integer> page){
-//        Pageable pageable = PageRequest.of(page.orElse(0), 3, Sort.by("id").descending());
-//        Map<List<OrderManageDTO>, Integer> listMap = orderService.getAllOrdersByShopIdAndState(shopId, state, pageable);
-//
-//        List<Object> list = new ArrayList<>();
-//        listMap.forEach((orderManageDTOS, integer) -> {
-//            list.add(orderManageDTOS);
-//            list.add(integer);
-//        });
-//        if(list.isEmpty()){
-//            return new ResponseEntity<>("No orders found", HttpStatus.NOT_FOUND);
-//        }else{
-//            return ResponseEntity.ok(list);
-//        }
-//    }
+    @Operation(summary = "Gets all order by shop + paging")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return orders list", content = @Content(schema = @Schema(implementation = OrderManageDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @GetMapping("/{shop-id}/orders")
+    public ResponseEntity<?> listOrdersByShop(
+            @PathVariable(name = "shop-id") Integer shopId,
+            @RequestParam("search") Optional<String> search,
+            @RequestParam("sort") String sort,
+            @RequestParam("payment") Optional<List<String>> payment,
+            @RequestParam("state") Optional<List<String>> state,
+            @RequestParam("page") Optional<Integer> page) {
+
+        Pageable pageable = null;
+        if (sort.equals("asc")) {
+            pageable = PageRequest.of(page.orElse(0), 10, Sort.by("id").ascending());
+        } else if (sort.equals("desc")) {
+            pageable = PageRequest.of(page.orElse(0), 10, Sort.by("id").descending());
+        }
+        Map<List<OrderManageDTO>, Long> listMap = orderService
+                .getAllOrdersByShopId(shopId, search.orElse(""), payment.orElse(null), state.orElse(null), pageable);
+
+        List<Object> list = new ArrayList<>();
+        listMap.forEach((orderManageDTOS, integer) -> {
+            list.add(orderManageDTOS);
+            list.add(integer);
+        });
+        if (list.isEmpty()) {
+            return new ResponseEntity<>("No orders found", HttpStatus.NOT_FOUND);
+        } else {
+            return ResponseEntity.ok(list);
+        }
+    }
+
 
 }
