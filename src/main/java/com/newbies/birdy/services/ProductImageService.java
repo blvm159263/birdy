@@ -9,4 +9,6 @@ public interface ProductImageService {
     void saveImages(String[] images, Integer productId);
 
     List<ProductImageDTO> getAllImageByProductId(Integer productId);
+
+    void deleteImages(Integer productId);
 }

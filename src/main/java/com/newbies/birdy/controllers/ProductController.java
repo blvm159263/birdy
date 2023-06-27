@@ -338,29 +338,40 @@ public class ProductController {
     public ResponseEntity<?> updateProduct(
             @PathVariable("id") Integer id,
             @RequestPart(value = "productDTO") String jsonString,
-            @RequestPart(value = "mainImage") MultipartFile mainImage,
+            @RequestPart(value = "mainImage", required = false) MultipartFile mainImage,
             @RequestPart(value = "subImages", required = false) MultipartFile[] subImages
     ) {
         Integer productId;
         try {
-            String fileName = firebaseStorageService.uploadFile(mainImage);
-            String mainImgUrl = firebaseStorageService.getImageUrl(fileName);
-
             ObjectMapper objectMapper = new ObjectMapper();
             ProductDTO productDTO = objectMapper.readValue(jsonString, ProductDTO.class);
 
             productDTO.setId(id);
-            productDTO.setImageMain(mainImgUrl);
+            if (mainImage != null){
+                String fileNameMain = firebaseStorageService.uploadFile(mainImage);
+                String mainImgUrl = firebaseStorageService.getImageUrl(fileNameMain);
+
+                productDTO.setImageMain(mainImgUrl);
+            } else {
+                productDTO.setImageMain(productService.getProductById(id).getImageMain());
+            }
 
             productId = productService.saveProduct(productDTO);
-            if (productId != null && subImages != null) {
-                String[] subImgUrls = new String[subImages.length];
-                for (int i = 0; i < subImages.length; i++) {
-                    fileName = firebaseStorageService.uploadFile(subImages[i]);
-                    subImgUrls[i] = firebaseStorageService.getImageUrl(fileName);
+            if (productId != null) {
+                if (subImages != null) {
+                    productImageService.deleteImages(productId);
+
+                    String[] subImgUrls = new String[subImages.length];
+                    for (int i = 0; i < subImages.length; i++) {
+                        String fileNameSub = firebaseStorageService.uploadFile(subImages[i]);
+                        subImgUrls[i] = firebaseStorageService.getImageUrl(fileNameSub);
+                    }
+                    productImageService.saveImages(subImgUrls, productId);
+                } else {
+                    productImageService.deleteImages(productId);
                 }
-                productImageService.saveImages(subImgUrls, productId);
             }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
