@@ -22,11 +22,15 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     Optional<Order> findByIdAndStatus(Integer orderId, Boolean b);
 
+//
+
+    List<Order> findByShipmentOrderInAndPaymentMethodInAndStatus(List<Shipment> shipmentList, List<PaymentMethod> paymentMethodList, Boolean status);
+
     Page<Order> findByShipmentOrderInAndPaymentMethodInAndStatus(List<Shipment> shipmentList, List<PaymentMethod> paymentMethodList, Boolean status, Pageable pageable);
 
-    Page<Order> findByShipmentOrderInAndPaymentMethodInAndStateAndStatus(List<Shipment> shipmentList, List<PaymentMethod> paymentMethodList, OrderState state, Boolean status, Pageable pageable);
+    Page<Order> findByShipmentOrderInAndPaymentMethodInAndStateInAndStatus(List<Shipment> shipmentList, List<PaymentMethod> paymentMethodList, List<OrderState> state, Boolean status, Pageable pageable);
 
-    Page<Order> findByShipmentOrderInAndPaymentMethodInAndPaymentStatusAndStatus(List<Shipment> shipmentList, List<PaymentMethod> paymentMethodList, PaymentStatus paymentStatus, Boolean status, Pageable pageable);
+    Page<Order> findByShipmentOrderInAndPaymentMethodInAndPaymentStatusInAndStatus(List<Shipment> shipmentList, List<PaymentMethod> paymentMethodList, List<PaymentStatus> paymentStatus, Boolean status, Pageable pageable);
 
-    Page<Order> findByShipmentOrderInAndPaymentMethodInAndPaymentStatusAndStateAndStatus(List<Shipment> shipmentList, List<PaymentMethod> paymentMethodList, PaymentStatus paymentStatus, OrderState state, Boolean status, Pageable pageable);
+    Page<Order> findByShipmentOrderInAndPaymentMethodInAndPaymentStatusInAndStateInAndStatus(List<Shipment> shipmentList, List<PaymentMethod> paymentMethodList, List<PaymentStatus> paymentStatus, List<OrderState> state, Boolean status, Pageable pageable);
 }

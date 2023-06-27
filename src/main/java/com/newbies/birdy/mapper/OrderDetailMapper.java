@@ -14,6 +14,7 @@ public interface OrderDetailMapper {
 
     OrderDetailMapper INSTANCE = Mappers.getMapper(OrderDetailMapper.class);
 
+    @Mapping(target = "productCategory", source = "productOrderDetail.category.categoryName")
     @Mapping(target = "productName", source = "productOrderDetail.productName")
     @Mapping(target = "productId", source = "productOrderDetail.id")
     @Mapping(target = "orderId", source = "order.id")
