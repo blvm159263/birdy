@@ -16,6 +16,7 @@ public interface OrderMapper {
 
 
 
+    @Mapping(target = "total", source = "orderDetailList", qualifiedByName = "mapTotal")
     @Mapping(target = "shopId", source = "orderDetailList", qualifiedByName = "mapShopId")
     @Mapping(target = "address", source = "addressOrder.address")
     @Mapping(target = "addressId", source = "addressOrder.id")
@@ -43,6 +44,14 @@ public interface OrderMapper {
         return s;
     }
 
+    @Named("mapTotal")
+    default Double mapTotal(List<OrderDetail> list) {
+        Double total = 0.0;
+        for (OrderDetail orderDetail : list) {
+            total += orderDetail.getQuantity() * orderDetail.getPrice();
+        }
+        return total;
+    }
 
     @Named("mapShopId")
     default Integer mapShopId(List<OrderDetail> list) {
