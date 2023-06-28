@@ -36,4 +36,6 @@ public class OrderDTO {
 
     private String address;
 
+    private Integer shopId;
+
 }

@@ -8,6 +8,7 @@ import com.newbies.birdy.repositories.AccountRepository;
 import com.newbies.birdy.services.AccountService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Transactional
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public AccountDTO getByPhoneNumber(String phoneNumber, Boolean status) {
@@ -28,7 +31,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository
                 .findByPhoneNumberAndStatus(phoneNumber, true)
                 .orElseThrow(() -> new EntityNotFoundException("Account not found!"));
-        account.setPassword(password);
+        account.setPassword(passwordEncoder.encode(password));
         return accountRepository.save(account).getId() != null;
     }
 }
