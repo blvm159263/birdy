@@ -4,8 +4,10 @@ import com.newbies.birdy.entities.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,4 +35,13 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     Page<Order> findByShipmentOrderInAndPaymentMethodInAndPaymentStatusInAndStatus(List<Shipment> shipmentList, List<PaymentMethod> paymentMethodList, List<PaymentStatus> paymentStatus, Boolean status, Pageable pageable);
 
     Page<Order> findByShipmentOrderInAndPaymentMethodInAndPaymentStatusInAndStateInAndStatus(List<Shipment> shipmentList, List<PaymentMethod> paymentMethodList, List<PaymentStatus> paymentStatus, List<OrderState> state, Boolean status, Pageable pageable);
+
+    @Query("SELECT DISTINCT YEAR(o.createDate) FROM Order o " +
+            "WHERE o.status = TRUE " +
+            "AND o.shipmentOrder.shopShipment.id = :shopId " +
+            "AND o.state IN :states " +
+            "ORDER BY YEAR(o.createDate) DESC")
+    List<Integer> getAllYearsForOrdersChart(Integer shopId, List<OrderState> states);
+
+    Long countByShipmentOrderInAndStateAndCreateDateBetweenAndStatus(List<Shipment> shipmentList, OrderState state, Date start, Date end, Boolean status);
 }

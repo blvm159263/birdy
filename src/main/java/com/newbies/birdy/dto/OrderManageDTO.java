@@ -16,5 +16,6 @@ public class OrderManageDTO {
     private String shipType;
     private String paymentMethod;
     private String paymentStatus;
+    private String comment;
     private String state;
 }

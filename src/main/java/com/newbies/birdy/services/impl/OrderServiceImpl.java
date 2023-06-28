@@ -119,6 +119,7 @@ public class OrderServiceImpl implements OrderService {
             orderManageDTO.setShipType(order.getShipmentOrder().getShipmentType().getShipmentTypeName());
             orderManageDTO.setPaymentMethod(order.getPaymentMethod().getPaymentType().getPaymentTypeName().toUpperCase());
             orderManageDTO.setPaymentStatus(String.valueOf(order.getPaymentStatus()));
+            orderManageDTO.setComment(order.getComment());
             orderManageDTO.setState(String.valueOf(order.getState()));
 
             orderManageDTOList.add(orderManageDTO);
@@ -251,10 +252,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Boolean editOrderState(Integer orderId, String state) {
+    public Boolean editOrderState(Integer orderId, String state, String comment) {
         Order order = orderRepository.findByIdAndStatus(orderId, true).orElseThrow(() -> new EntityNotFoundException("Order ID not found"));
         OrderState orderState = Enum.valueOf(OrderState.class, state.toUpperCase().trim());
         order.setState(orderState);
+        order.setComment(comment.isEmpty() ? null : comment);
         return orderRepository.save(order).getState().toString().equals(state.toUpperCase().trim());
     }
 

@@ -6,8 +6,11 @@ import com.newbies.birdy.entities.Shop;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,4 +54,15 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     Page<Product> findByShopProductAndProductNameContainingIgnoreCaseAndStateAndCategoryAndStatus(Shop shop, String search, Integer state, Category category, Boolean status, Pageable pageable);
 
     Page<Product> findByShopProductAndProductNameContainingIgnoreCaseAndCategoryAndStatus(Shop shop, String search, Category category, Boolean status, Pageable pageable);
+
+    @Query("SELECT DISTINCT YEAR(p.createDate) FROM Product p " +
+            "WHERE p.shopProduct = :shopProduct " +
+            "AND p.status = TRUE " +
+            "AND p.state = 1 " +
+            "ORDER BY YEAR(p.createDate) DESC")
+    List<Integer> findDistinctYear(@Param("shopProduct") Shop shopProduct);
+
+    Long countByShopProductAndStateAndStatusAndCreateDateBetween(Shop shop, Integer state, Boolean status, Date start, Date end);
+
+    Long countByShopProductAndStateAndStatusAndCreateDateBetweenAndCategory(Shop shop, Integer state, Boolean status, Date start, Date end, Category category);
 }
