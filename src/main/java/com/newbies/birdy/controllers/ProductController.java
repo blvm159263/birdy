@@ -73,7 +73,7 @@ public class ProductController {
             @Parameter(description = "Products status (true=available or false=unavailable)", example = "true") @PathVariable("status") Boolean status,
             @Parameter(description = "Page number (start from 0)", example = "0") @RequestParam("page") Optional<Integer> page) {
         Pageable pageable = PageRequest.of(page.orElse(0), 30);
-        Map<List<ProductDTO>, Integer> listMap = productService.getAllProductsByStatusAndPaging(status, pageable);
+        Map<List<ProductDTO>, Integer> listMap = productService.getAllProductsByStatusAndPaging(status, -1, pageable);
         List<Object> list = new ArrayList<>();
         listMap.forEach((productDTOS, integer) -> {
             list.add(productDTOS);
@@ -97,7 +97,7 @@ public class ProductController {
     public ResponseEntity<?> getAllProductsAndPaging(
             @Parameter(description = "Page number (start from 0)", example = "0") @RequestParam("page") Optional<Integer> page) {
         Pageable pageable = PageRequest.of(page.orElse(0), 30, Sort.by("rating").descending());
-        Map<List<ProductDTO>, Integer> listMap = productService.getAllProductsByStatusAndPaging(true, pageable);
+        Map<List<ProductDTO>, Integer> listMap = productService.getAllProductsByStatusAndPaging(true,0, pageable);
         List<Object> list = new ArrayList<>();
         listMap.forEach((productDTOS, integer) -> {
             list.add(productDTOS);

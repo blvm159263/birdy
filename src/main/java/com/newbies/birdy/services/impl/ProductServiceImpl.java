@@ -37,14 +37,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> getFirst15ProductsWithStatusTrue() {
-        return productRepository.findTop15ByRatingGreaterThanAndStateAndStatusOrderByRatingDesc(3, 1, true)
+        return productRepository.findTop15ByRatingGreaterThanAndStateAndStatusAndQuantityGreaterThanOrderByRatingDesc(3, 1, true, 0)
                 .stream().map(ProductMapper.INSTANCE::toDTO).toList();
     }
 
     @Override
-    public Map<List<ProductDTO>, Integer> getAllProductsByStatusAndPaging(Boolean status, Pageable pageable) {
+    public Map<List<ProductDTO>, Integer> getAllProductsByStatusAndPaging(Boolean status, Integer quantity, Pageable pageable) {
         Map<List<ProductDTO>, Integer> pair = new HashMap<>();
-        Page<Product> pageList = productRepository.findByStatusAndStateOrderByRatingDesc(status, 1, pageable);
+        Page<Product> pageList = productRepository.findByStatusAndStateAndQuantityGreaterThanOrderByRatingDesc(status, 1, quantity, pageable);
         pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
         return pair;
     }
@@ -107,13 +107,13 @@ public class ProductServiceImpl implements ProductService {
         Map<List<ProductDTO>, Integer> pair = new HashMap<>();
         Page<Product> pageList = null;
         if (rating < 0 && from < 0 && to < 0){
-            pageList = productRepository.findByProductNameIgnoreCaseContainingAndStateAndStatus(search, 1, status, pageable);
+            pageList = productRepository.findByProductNameIgnoreCaseContainingAndStateAndStatusAndQuantityGreaterThan(search, 1, status, 0, pageable);
         } else if(rating >= 0 && from < 0 && to < 0){
-            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndRatingAndStatus(search, 1, rating, status, pageable);
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndRatingAndStatusAndQuantityGreaterThan(search, 1, rating, status, 0, pageable);
         } else if (rating < 0 && from >= 0 && to >= from) {
-            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndUnitPriceBetweenAndStatus(search, 1, from, to, status, pageable);
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndUnitPriceBetweenAndStatusAndQuantityGreaterThan(search, 1, from, to, status, 0, pageable);
         } else if (rating >= 0 && from >= 0 && to >= from) {
-            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndRatingAndUnitPriceBetweenAndStatus(search, 1, rating, from, to, status, pageable);
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndRatingAndUnitPriceBetweenAndStatusAndQuantityGreaterThan(search, 1, rating, from, to, status, 0, pageable);
         }
 
         pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());
@@ -126,13 +126,13 @@ public class ProductServiceImpl implements ProductService {
         Map<List<ProductDTO>, Integer> pair = new HashMap<>();
         Page<Product> pageList = null;
         if (rating < 0 && from < 0 && to < 0){
-            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndCategoryAndStatus(search, 1, category, status, pageable);
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndCategoryAndStatusAndQuantityGreaterThan(search, 1, category, status, 0, pageable);
         } else if(rating >= 0 && from < 0 && to < 0){
-            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndCategoryAndRatingAndStatus(search, 1, category, rating, status, pageable);
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndCategoryAndRatingAndStatusAndQuantityGreaterThan(search, 1, category, rating, status, 0, pageable);
         } else if (rating < 0 && from >= 0 && to >= from) {
-            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndCategoryAndUnitPriceBetweenAndStatus(search, 1, category, from, to, status, pageable);
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndCategoryAndUnitPriceBetweenAndStatusAndQuantityGreaterThan(search, 1, category, from, to, status, 0, pageable);
         } else if (rating >= 0 && from >= 0 && to >= from) {
-            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndCategoryAndRatingAndUnitPriceBetweenAndStatus(search, 1, category, rating, from, to, status, pageable);
+            pageList = productRepository.findByProductNameContainingIgnoreCaseAndStateAndCategoryAndRatingAndUnitPriceBetweenAndStatusAndQuantityGreaterThan(search, 1, category, rating, from, to, status, 0, pageable);
         }
 
         pair.put(pageList.stream().map(ProductMapper.INSTANCE::toDTO).toList(), pageList.getTotalPages());

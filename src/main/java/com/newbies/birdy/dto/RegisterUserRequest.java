@@ -9,22 +9,17 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShopDTO {
-
-    private Integer id;
+public class RegisterUserRequest {
 
     private String email;
 
-    private String shopName;
+    private String fullName;
 
-    private String address;
+    private Date dob;
 
-    private String avatarUrl;
-
-    private Date createDate;
-
-    private Integer accountId;
+    private Integer gender;
 
     private String phoneNumber;
 
+    private String password;
 }

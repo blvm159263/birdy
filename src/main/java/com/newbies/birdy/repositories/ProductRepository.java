@@ -14,29 +14,29 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 
-    List<Product> findTop15ByRatingGreaterThanAndStateAndStatusOrderByRatingDesc(Integer rating, Integer state, Boolean status);
+    List<Product> findTop15ByRatingGreaterThanAndStateAndStatusAndQuantityGreaterThanOrderByRatingDesc(Integer rating, Integer state, Boolean status, Integer quantity);
 
-    Page<Product> findByStatusAndStateOrderByRatingDesc(Boolean status, Integer state, Pageable page);
+    Page<Product> findByStatusAndStateAndQuantityGreaterThanOrderByRatingDesc(Boolean status, Integer state, Integer quantity, Pageable page);
 
     //------------- search and sort (all products) ------------------
-    Page<Product> findByProductNameIgnoreCaseContainingAndStateAndStatus(String name, Integer state, Boolean status, Pageable pageable);
+    Page<Product> findByProductNameIgnoreCaseContainingAndStateAndStatusAndQuantityGreaterThan(String name, Integer state, Boolean status, Integer quantity, Pageable pageable);
 
-    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndRatingAndStatus(String name, Integer state, Integer rating, Boolean status, Pageable pageable);
+    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndRatingAndStatusAndQuantityGreaterThan(String name, Integer state, Integer rating, Boolean status, Integer quantity, Pageable pageable);
 
-    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndUnitPriceBetweenAndStatus(String name, Integer state, Double from, Double to, Boolean status, Pageable pageable);
+    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndUnitPriceBetweenAndStatusAndQuantityGreaterThan(String name, Integer state, Double from, Double to, Boolean status, Integer quantity, Pageable pageable);
 
-    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndRatingAndUnitPriceBetweenAndStatus(String name, Integer state, Integer rating, Double from, Double to, Boolean status, Pageable pageable);
+    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndRatingAndUnitPriceBetweenAndStatusAndQuantityGreaterThan(String name, Integer state, Integer rating, Double from, Double to, Boolean status, Integer quantity, Pageable pageable);
 
     // --------------------------------------------------------------
 
     //------------ search and sort in a category ----------------
-    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndCategoryAndStatus(String search, Integer state, Category category, Boolean status, Pageable pageable);
+    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndCategoryAndStatusAndQuantityGreaterThan(String search, Integer state, Category category, Boolean status, Integer quantity, Pageable pageable);
 
-    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndCategoryAndRatingAndStatus(String name, Integer state, Category category, Integer rating, Boolean status, Pageable pageable);
+    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndCategoryAndRatingAndStatusAndQuantityGreaterThan(String name, Integer state, Category category, Integer rating, Boolean status, Integer quantity, Pageable pageable);
 
-    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndCategoryAndUnitPriceBetweenAndStatus(String name, Integer state, Category category, Double from, Double to, Boolean status, Pageable pageable);
+    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndCategoryAndUnitPriceBetweenAndStatusAndQuantityGreaterThan(String name, Integer state, Category category, Double from, Double to, Boolean status, Integer quantity, Pageable pageable);
 
-    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndCategoryAndRatingAndUnitPriceBetweenAndStatus(String name, Integer state, Category category, Integer rating, Double from, Double to, Boolean status, Pageable pageable);
+    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndCategoryAndRatingAndUnitPriceBetweenAndStatusAndQuantityGreaterThan(String name, Integer state, Category category, Integer rating, Double from, Double to, Boolean status, Integer quantity, Pageable pageable);
 
     // ----------------------------------------------------------
 

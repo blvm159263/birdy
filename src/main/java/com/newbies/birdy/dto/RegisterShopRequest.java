@@ -5,19 +5,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class RegisterShopRequest {
 
     private String email;
 
-    private String fullName;
+    private String shopName;
 
-    private Date dob;
-
-    private Integer gender;
+    private String address;
 
     private String phoneNumber;
 
