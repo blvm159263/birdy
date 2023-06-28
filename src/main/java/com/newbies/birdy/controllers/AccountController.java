@@ -1,6 +1,7 @@
 package com.newbies.birdy.controllers;
 
 import com.newbies.birdy.dto.AccountDTO;
+import com.newbies.birdy.dto.AuthenticationRequest;
 import com.newbies.birdy.exceptions.ObjectException;
 import com.newbies.birdy.services.AccountService;
 import com.newbies.birdy.services.UserService;
@@ -44,9 +45,8 @@ public class AccountController {
             @ApiResponse(responseCode = "500", description = "Internal error")
     })
     @PutMapping("/password")
-    public ResponseEntity<?> updatePassword(@RequestParam("phoneNumber") String phoneNumber,
-                                            @RequestParam("password") String password){
-        return ResponseEntity.ok(accountService.updatePassword(phoneNumber, password));
+    public ResponseEntity<?> updatePassword(@RequestBody AuthenticationRequest authenticationRequest){
+        return ResponseEntity.ok(accountService.updatePassword(authenticationRequest.getPhoneNumber(), authenticationRequest.getPassword()));
     }
 
 
