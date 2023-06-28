@@ -1,14 +1,13 @@
 package com.newbies.birdy.mapper;
 
 import com.newbies.birdy.dto.OrderDTO;
-import com.newbies.birdy.entities.Address;
-import com.newbies.birdy.entities.Order;
-import com.newbies.birdy.entities.PaymentMethod;
-import com.newbies.birdy.entities.Shipment;
+import com.newbies.birdy.entities.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 @Mapper
 public interface OrderMapper {
@@ -17,6 +16,7 @@ public interface OrderMapper {
 
 
 
+    @Mapping(target = "shopId", source = "orderDetailList", qualifiedByName = "mapShopId")
     @Mapping(target = "address", source = "addressOrder.address")
     @Mapping(target = "addressId", source = "addressOrder.id")
     @Mapping(target = "shipmentTypeName", source = "shipmentOrder.shipmentType.shipmentTypeName")
@@ -41,6 +41,12 @@ public interface OrderMapper {
         Shipment s = new Shipment();
         s.setId(id);
         return s;
+    }
+
+
+    @Named("mapShopId")
+    default Integer mapShopId(List<OrderDetail> list) {
+        return list.get(0).getProductOrderDetail().getShopProduct().getId();
     }
 
     @Named("mapAddress")
