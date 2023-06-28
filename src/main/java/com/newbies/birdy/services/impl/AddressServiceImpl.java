@@ -71,4 +71,15 @@ public class AddressServiceImpl implements AddressService {
         return AddressMapper.INSTANCE.toDTO(addressRepository.findById(addressId)
                 .orElseThrow(() -> new EntityNotFoundException("Can not find address have id: " + addressId)));
     }
+
+    @Override
+    public Boolean updateAddress(Integer addressId, String newAddress) {
+        Address address = addressRepository
+                .findById(addressId)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Can not find address have id: " + addressId));
+        address.setAddress(newAddress);
+
+        return addressRepository.save(address).getId() != null;
+    }
 }
