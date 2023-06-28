@@ -38,4 +38,6 @@ public class OrderDTO {
 
     private Integer shopId;
 
+    private Double total;
+
 }
