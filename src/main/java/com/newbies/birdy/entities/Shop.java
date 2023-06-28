@@ -25,6 +25,9 @@ public class Shop {
     @Column(name = "id", nullable = false, updatable = false)
     private Integer id;
 
+    @Column(name = "email",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+    private String email;
+
     @Column(name = "shop_name",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", nullable = false)
     private String shopName;
 
