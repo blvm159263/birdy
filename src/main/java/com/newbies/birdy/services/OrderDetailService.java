@@ -7,4 +7,6 @@ import java.util.List;
 public interface OrderDetailService {
 
     List<OrderDetailDTO> getOrderDetailsByOrderIdAndStatus(Integer orderId, Boolean status);
+
+    Boolean updateOrderDetails(List<OrderDetailDTO> orderDetailDTOs);
 }

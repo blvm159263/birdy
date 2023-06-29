@@ -17,5 +17,7 @@ public interface UserService {
 
     List<AddressDTO> getUserAddressList(Integer id);
 
+    Boolean updateUser(UserDTO userDTO);
+
 
 }

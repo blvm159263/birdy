@@ -68,6 +68,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Boolean updateUser(UserDTO userDTO) {
+        User user = UserMapper.INSTANCE.toEntity(userDTO);
+        user.setStatus(true);
+        return userRepository.save(user).getId() != null;
+    }
+
+    @Override
     public UserDTO getUserByAccount(Account account) {
         return UserMapper.INSTANCE.toDTO(userRepository.findByAccountUser(account));
     }

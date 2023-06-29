@@ -142,4 +142,19 @@ public class OrderController {
         return new ResponseEntity<>("Edit order failed", HttpStatus.BAD_REQUEST);
     }
 
+    @Operation(summary = "Edit order state by order id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Not Found!", content = @Content(schema = @Schema(implementation = OrderDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Internal error"),
+            @ApiResponse(responseCode = "200", description = "Return Order code"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")
+    })
+    @PutMapping("/order-detail/list")
+    public ResponseEntity<?> updateOrderDetails(@RequestBody List<OrderDetailDTO> orderDetailDTOList) {
+        Boolean edited = orderDetailService.updateOrderDetails(orderDetailDTOList);
+        if(edited){
+            return new ResponseEntity<>("Update successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>(" failed", HttpStatus.BAD_REQUEST);
+    }
 }
