@@ -1,8 +1,7 @@
 package com.newbies.birdy.controllers;
 
 import com.newbies.birdy.dto.ProductDTO;
-import com.newbies.birdy.services.*;
-import io.swagger.v3.oas.annotations.Parameter;
+import com.newbies.birdy.services.AdminService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
