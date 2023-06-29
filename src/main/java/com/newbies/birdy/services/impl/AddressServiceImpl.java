@@ -82,6 +82,8 @@ public class AddressServiceImpl implements AddressService {
             addressDefault.setIsDefault(false);
             addressRepository.save(addressDefault);
         }
-        return addressRepository.save(AddressMapper.INSTANCE.toEntity(address)).getId() != null;
+        Address addressUpdate = AddressMapper.INSTANCE.toEntity(address);
+        addressUpdate.setStatus(true);
+        return addressRepository.save(addressUpdate).getId() != null;
     }
 }
