@@ -37,9 +37,9 @@ public class AddressController  {
             @ApiResponse(responseCode = "200", description = "Update successfully! Return address true!"),
             @ApiResponse(responseCode = "500", description = "Internal error")
     })
-    @PutMapping("/addresses/{address-id}")
-    public ResponseEntity<?> updateAddress(@PathVariable(name = "address-id") Integer addressId, @RequestBody String newAddress){
-        Boolean status = addressService.updateAddress(addressId, newAddress);
+    @PutMapping("/")
+    public ResponseEntity<?> updateAddress(@RequestBody AddressDTO address){
+        Boolean status = addressService.updateAddress(address);
         if(!status){
             return ResponseEntity.badRequest().body("Can't update address!");
         }else{
