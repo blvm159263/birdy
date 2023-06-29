@@ -102,6 +102,7 @@ public class Product {
     @JsonBackReference
     private List<OrderDetail> orderDetailList;
 
-
+    @OneToMany(mappedBy = "productWishlist", fetch = FetchType.LAZY)
+    private List<Wishlist> wishlistList;
 
 }

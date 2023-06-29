@@ -50,7 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = userRepository
                 .save(new User(null, userInformationDTO.getFullName(), userInformationDTO.getEmail(),
                         userInformationDTO.getDob(), userInformationDTO.getGender(), null, new Date(),
-                        true, account, null, null));
+                        true, account, null, null, null));
         return UserMapper.INSTANCE.toDTO(user);
     }
 

@@ -27,4 +27,7 @@ public class ShopDTO {
 
     private String phoneNumber;
 
+    private Integer totalProduct;
+
+    private String rating;
 }

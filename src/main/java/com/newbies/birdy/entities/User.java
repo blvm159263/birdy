@@ -58,6 +58,7 @@ public class User {
     @JsonBackReference
     private List<PaymentMethod> paymentMethodList;
 
-
+    @OneToMany(mappedBy = "userWishlist", fetch = FetchType.LAZY)
+    private List<Wishlist> wishlistList;
 
 }
