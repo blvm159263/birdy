@@ -1,7 +1,6 @@
 package com.newbies.birdy.services;
 
 import com.newbies.birdy.dto.WishlistDTO;
-import com.newbies.birdy.entities.Wishlist;
 
 import java.util.List;
 

@@ -1,6 +1,5 @@
 package com.newbies.birdy.controllers;
 
-import com.newbies.birdy.dto.AddressDTO;
 import com.newbies.birdy.dto.WishlistDTO;
 import com.newbies.birdy.exceptions.ObjectException;
 import com.newbies.birdy.services.WishlistService;
