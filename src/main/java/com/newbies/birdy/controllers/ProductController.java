@@ -363,7 +363,8 @@ public class ProductController {
 
 
             if (objects != null) {
-                List<FileImageDTO> fileImageDTOList = objectMapper.readValue(objects, new TypeReference<>() {});
+                List<FileImageDTO> fileImageDTOList = objectMapper.readValue(objects, new TypeReference<>() {
+                });
 
                 if (fileImageDTOList.size() > 0) {
                     List<Integer> uidList = fileImageDTOList.stream().map(FileImageDTO::getUid).toList();
@@ -379,13 +380,13 @@ public class ProductController {
 
             productId = productService.saveProduct(productDTO);
             if (productId != null && subImages != null) {
-                    String[] subImgUrls = new String[subImages.length];
-                    for (int i = 0; i < subImages.length; i++) {
-                        String fileNameSub = firebaseStorageService.uploadFile(subImages[i]);
-                        subImgUrls[i] = firebaseStorageService.getImageUrl(fileNameSub);
+                String[] subImgUrls = new String[subImages.length];
+                for (int i = 0; i < subImages.length; i++) {
+                    String fileNameSub = firebaseStorageService.uploadFile(subImages[i]);
+                    subImgUrls[i] = firebaseStorageService.getImageUrl(fileNameSub);
+                }
+                productImageService.saveImages(subImgUrls, productId);
 
-                        productImageService.saveImages(subImgUrls, productId);
-                    }
 
             }
 
