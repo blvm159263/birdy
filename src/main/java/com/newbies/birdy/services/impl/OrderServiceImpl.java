@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Transactional
@@ -109,6 +110,7 @@ public class OrderServiceImpl implements OrderService {
         for (Order order : orderList.getContent()) {
             OrderManageDTO orderManageDTO = new OrderManageDTO();
             orderManageDTO.setId(order.getId());
+            orderManageDTO.setOrderDate(formatDate(order.getCreateDate()));
             orderManageDTO.setCustomer(order.getPaymentMethod().getUserPaymentMethod().getFullName());
 
             List<Double> listPrice = order.getOrderDetailList().stream().map(OrderDetail::getPrice).toList();
@@ -120,6 +122,7 @@ public class OrderServiceImpl implements OrderService {
             orderManageDTO.setShipType(order.getShipmentOrder().getShipmentType().getShipmentTypeName());
             orderManageDTO.setPaymentMethod(order.getPaymentMethod().getPaymentType().getPaymentTypeName().toUpperCase());
             orderManageDTO.setPaymentStatus(String.valueOf(order.getPaymentStatus()));
+            orderManageDTO.setComment(order.getComment());
             orderManageDTO.setState(String.valueOf(order.getState()));
 
             orderManageDTOList.add(orderManageDTO);
@@ -128,6 +131,10 @@ public class OrderServiceImpl implements OrderService {
         return pair;
     }
 
+    private String formatDate(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        return formatter.format(date);
+    }
     /*
     @Override
     public Map<List<OrderManageDTO>, Long> getAllOrderByShop(Integer shopId, String search, Pageable pageable) {
@@ -252,10 +259,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Boolean editOrderState(Integer orderId, String state) {
+    public Boolean editOrderState(Integer orderId, String state, String comment) {
         Order order = orderRepository.findByIdAndStatus(orderId, true).orElseThrow(() -> new EntityNotFoundException("Order ID not found"));
         OrderState orderState = Enum.valueOf(OrderState.class, state.toUpperCase().trim());
         order.setState(orderState);
+        order.setComment(comment.isEmpty() ? null : comment);
         return orderRepository.save(order).getState().toString().equals(state.toUpperCase().trim());
     }
 

@@ -118,9 +118,9 @@ public class OrderController {
 //        }
         String code = orderService.createOrder(list, listDetail);
 
-        if(!code.isEmpty()) {
+        if (!code.isEmpty()) {
             return ResponseEntity.ok(code);
-        }else{
+        } else {
             return new ResponseEntity<>("Creat order failed", HttpStatus.BAD_REQUEST);
         }
     }
@@ -134,9 +134,10 @@ public class OrderController {
     })
     @PatchMapping("/edit/{order-id}")
     public ResponseEntity<?> editOrderState(@PathVariable(name = "order-id") Integer orderId,
-                                             @RequestParam(name = "state") String state) {
-        Boolean edited = orderService.editOrderState(orderId, state);
-        if(edited){
+                                            @RequestParam(name = "state") String state,
+                                            @RequestParam(name = "comment") String comment) {
+        Boolean edited = orderService.editOrderState(orderId, state, comment);
+        if (edited) {
             return new ResponseEntity<>("Edit order state successfully", HttpStatus.OK);
         }
         return new ResponseEntity<>("Edit order failed", HttpStatus.BAD_REQUEST);

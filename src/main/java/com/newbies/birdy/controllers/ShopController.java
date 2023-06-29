@@ -17,7 +17,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 @Tag(name = "Shop API")
@@ -30,6 +32,7 @@ public class ShopController {
     private final ProductService productService;
     private final AccountService accountService;
     private final OrderService orderService;
+    private final FirebaseStorageService firebaseStorageService;
     private final UserService userService;
 
     @Operation(summary = "Search shop by given name")
@@ -352,9 +355,9 @@ public class ShopController {
 
         Pageable pageable = null;
         if (sort.equals("asc")) {
-            pageable = PageRequest.of(page.orElse(0), 10, Sort.by("id").ascending());
+            pageable = PageRequest.of(page.orElse(0), 10, Sort.by("createDate").ascending());
         } else if (sort.equals("desc")) {
-            pageable = PageRequest.of(page.orElse(0), 10, Sort.by("id").descending());
+            pageable = PageRequest.of(page.orElse(0), 10, Sort.by("createDate").descending());
         }
         Map<List<OrderManageDTO>, Long> listMap = orderService
                 .getAllOrdersByShopId(shopId, search.orElse(""), payment.orElse(null), state.orElse(null), pageable);
@@ -371,5 +374,92 @@ public class ShopController {
         }
     }
 
+
+    @Operation(summary = "Get all year of product created in by shop")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return years list"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @GetMapping("/{shop-id}/chart-product/all-years")
+    public ResponseEntity<?> getAllYearOfProductCreatedInByShop(@PathVariable(name = "shop-id") Integer shopId) {
+        List<Integer> list = shopService.getAllYearsForProductsChart(shopId);
+        if (list.isEmpty()) {
+            return new ResponseEntity<>("Not found any year", HttpStatus.NOT_FOUND);
+        } else {
+            return ResponseEntity.ok(list);
+        }
+    }
+
+    @Operation(summary = "Get product chart data by shop")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return chart data", content = @Content(schema = @Schema(implementation = ProductsChartDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @GetMapping("/{shop-id}/chart-product/{year}")
+    public ResponseEntity<?> getProductsChartDataByShop(
+            @PathVariable(name = "shop-id") Integer shopId,
+            @PathVariable(name = "year") Integer year) {
+        ProductsChartDTO data = shopService.getDataForProductsChart(shopId, year);
+        return ResponseEntity.ok(data);
+    }
+
+    @Operation(summary = "Get all year of orders created in by shop")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return years list"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @GetMapping("/{shop-id}/chart-order/all-years")
+    public ResponseEntity<?> getAllYearOfOrderCreatedInByShop(@PathVariable(name = "shop-id") Integer shopId) {
+        List<Integer> list = shopService.getAllYearsForOrdersChart(shopId);
+        if (list.isEmpty()) {
+            return new ResponseEntity<>("Not found any year", HttpStatus.NOT_FOUND);
+        } else {
+            return ResponseEntity.ok(list);
+        }
+    }
+
+    @Operation(summary = "Get order chart data by shop")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return chart data", content = @Content(schema = @Schema(implementation = ProductsChartDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @GetMapping("/{shop-id}/chart-order/{year}")
+    public ResponseEntity<?> getOrdersChartDataByShop(
+            @PathVariable(name = "shop-id") Integer shopId,
+            @PathVariable(name = "year") Integer year) {
+        OrdersChartDTO data = shopService.getDataForOrdersChart(shopId, year);
+        return ResponseEntity.ok(data);
+    }
+
+    @PatchMapping(value = "/{shop-id}/update", consumes = {"multipart/form-data"})
+    public ResponseEntity<?> updateShop(@PathVariable(name = "shop-id") Integer shopId,
+                                        @RequestPart(value = "shopName") String shopName,
+                                        @RequestPart(value = "shopImage", required = false) MultipartFile shopImage) {
+        Integer updateId;
+        try {
+            if (shopImage == null) {
+                String shopAva = shopService.getShopById(shopId).getAvatarUrl();
+                updateId = shopService.updateShopProfile(shopId, shopName, shopAva);
+            } else {
+                String fileName = firebaseStorageService.uploadFile(shopImage);
+                String shopImageUrl = firebaseStorageService.getImageUrl(fileName);
+                updateId = shopService.updateShopProfile(shopId, shopName, shopImageUrl);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if (updateId == null) {
+            return new ResponseEntity<>("Update shop failed !!!", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(updateId, HttpStatus.OK);
+    }
 
 }
