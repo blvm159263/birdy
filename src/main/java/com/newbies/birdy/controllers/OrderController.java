@@ -116,9 +116,9 @@ public class OrderController {
 //        }
         String code = orderService.createOrder(list, listDetail);
 
-        if(!code.isEmpty()) {
+        if (!code.isEmpty()) {
             return ResponseEntity.ok(code);
-        }else{
+        } else {
             return new ResponseEntity<>("Creat order failed", HttpStatus.BAD_REQUEST);
         }
     }
@@ -132,12 +132,28 @@ public class OrderController {
     })
     @PatchMapping("/edit/{order-id}")
     public ResponseEntity<?> editOrderState(@PathVariable(name = "order-id") Integer orderId,
-                                             @RequestParam(name = "state") String state) {
-        Boolean edited = orderService.editOrderState(orderId, state);
-        if(edited){
+                                            @RequestParam(name = "state") String state,
+                                            @RequestParam(name = "comment") String comment) {
+        Boolean edited = orderService.editOrderState(orderId, state, comment);
+        if (edited) {
             return new ResponseEntity<>("Edit order state successfully", HttpStatus.OK);
         }
         return new ResponseEntity<>("Edit order failed", HttpStatus.BAD_REQUEST);
     }
 
+    @Operation(summary = "Edit order state by order id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Not Found!", content = @Content(schema = @Schema(implementation = OrderDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Internal error"),
+            @ApiResponse(responseCode = "200", description = "Return Order code"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")
+    })
+    @PutMapping("/order-detail/list")
+    public ResponseEntity<?> updateOrderDetails(@RequestBody List<OrderDetailDTO> orderDetailDTOList) {
+        Boolean edited = orderDetailService.updateOrderDetails(orderDetailDTOList);
+        if(edited){
+            return new ResponseEntity<>("Update successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>(" failed", HttpStatus.BAD_REQUEST);
+    }
 }

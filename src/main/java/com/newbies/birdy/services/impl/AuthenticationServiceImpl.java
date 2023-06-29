@@ -24,6 +24,8 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
+    private final static String defaultImg ="https://firebasestorage.googleapis.com/v0/b/birdy-36c81.appspot.com/o/1.png?alt=media&token=1a2b6a42-f288-47b2-873f-fff9bbfb2893";
+
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -47,9 +49,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Account account = accountRepository
                 .save(new Account(null, userInformationDTO.getPhoneNumber(),
                         passwordEncoder.encode(userInformationDTO.getPassword()) , Role.valueOf("USER"), true, null, null));
+
         User user = userRepository
                 .save(new User(null, userInformationDTO.getFullName(), userInformationDTO.getEmail(),
-                        userInformationDTO.getDob(), userInformationDTO.getGender(), null, new Date(),
+                        userInformationDTO.getDob(), userInformationDTO.getGender(), defaultImg, new Date(),
                         true, account, null, null, null));
         return UserMapper.INSTANCE.toDTO(user);
     }
@@ -59,7 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Account account = accountRepository
                 .save(new Account(null, info.getPhoneNumber(),
                         passwordEncoder.encode(info.getPassword()) , Role.valueOf("SHOP"), true, null, null));
-        Shop shop = shopRepository.save(new Shop(null, info.getEmail(), info.getShopName(), info.getAddress(), null,
+        Shop shop = shopRepository.save(new Shop(null, info.getEmail(), info.getShopName(), info.getAddress(), defaultImg,
                 new Date(), true, account, null, null));
         return ShopMapper.INSTANCE.toDTO(shop);
     }

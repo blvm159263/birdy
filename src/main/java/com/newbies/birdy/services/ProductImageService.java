@@ -1,5 +1,6 @@
 package com.newbies.birdy.services;
 
+import com.newbies.birdy.dto.FileImageDTO;
 import com.newbies.birdy.dto.ProductImageDTO;
 
 import java.util.List;
@@ -11,4 +12,6 @@ public interface ProductImageService {
     List<ProductImageDTO> getAllImageByProductId(Integer productId);
 
     void deleteImages(Integer productId);
+
+    void updateImages(List<FileImageDTO> files, List<Integer> ids, Integer productId);
 }

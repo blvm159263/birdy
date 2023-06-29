@@ -29,5 +29,5 @@ public interface OrderService {
 
     Map<List<OrderManageDTO>, Integer> getAllOrdersByShopIdAndState(Integer shopId, String state, Pageable pageable);
 
-    Boolean editOrderState(Integer orderId, String state);
+    Boolean editOrderState(Integer orderId, String state, String comment);
 }

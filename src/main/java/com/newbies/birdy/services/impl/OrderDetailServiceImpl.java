@@ -28,4 +28,11 @@ public class OrderDetailServiceImpl implements OrderDetailService {
         List<OrderDetail> orderDetailList = orderDetailRepository.findByOrderAndStatus(order, status);
         return orderDetailList.stream().map(OrderDetailMapper.INSTANCE::toDTO).toList();
     }
+
+    @Override
+    public Boolean updateOrderDetails(List<OrderDetailDTO> orderDetailDTOs) {
+        List<OrderDetail> orderDetailList = orderDetailDTOs.stream().map(OrderDetailMapper.INSTANCE::toEntity).toList();
+        orderDetailList.forEach(orderDetail -> orderDetail.setStatus(true));
+        return orderDetailRepository.saveAll(orderDetailList).size() == orderDetailDTOs.size();
+    }
 }

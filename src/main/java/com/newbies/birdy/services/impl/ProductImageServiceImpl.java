@@ -1,5 +1,6 @@
 package com.newbies.birdy.services.impl;
 
+import com.newbies.birdy.dto.FileImageDTO;
 import com.newbies.birdy.dto.ProductImageDTO;
 import com.newbies.birdy.entities.Product;
 import com.newbies.birdy.entities.ProductImage;
@@ -53,4 +54,24 @@ public class ProductImageServiceImpl implements ProductImageService {
             productImageRepository.deleteAll(list);
         }
     }
+
+    @Override
+    public void updateImages(List<FileImageDTO> files, List<Integer> ids, Integer productId) {
+        try {
+            for (FileImageDTO file : files) {
+                ProductImage productImage = productImageRepository.findById(file.getUid()).orElseThrow();
+                productImage.setImgUrl(file.getUrl());
+                productImageRepository.save(productImage);
+            }
+            Product product = productRepository.findById(productId).orElseThrow();
+            List<ProductImage> list = productImageRepository.findByProductImgAndIdNotIn(product, ids);
+            if (!list.isEmpty()) {
+                productImageRepository.deleteAll(list);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+
 }

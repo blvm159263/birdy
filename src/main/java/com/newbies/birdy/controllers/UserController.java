@@ -114,6 +114,17 @@ public class UserController  {
 
 
 
+    @Operation(summary = "Update User Information")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "User not found!", content = @Content(schema = @Schema(implementation = ObjectException.class))),
+            @ApiResponse(responseCode = "500", description = "Internal error"),
+            @ApiResponse(responseCode = "200", description = "Return true")
+    })
+    @PutMapping("")
+    public ResponseEntity<?> updateUser(@RequestBody UserDTO userDTO){
+        return ResponseEntity.ok(userService.updateUser(userDTO));
+    }
+
     @Operation(summary = "Get User Information")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "User not found!", content = @Content(schema = @Schema(implementation = ObjectException.class))),

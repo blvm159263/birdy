@@ -1,6 +1,8 @@
 package com.newbies.birdy.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.newbies.birdy.dto.FileImageDTO;
 import com.newbies.birdy.dto.ProductDTO;
 import com.newbies.birdy.dto.ReviewDTO;
 import com.newbies.birdy.services.FirebaseStorageService;
@@ -97,7 +99,7 @@ public class ProductController {
     public ResponseEntity<?> getAllProductsAndPaging(
             @Parameter(description = "Page number (start from 0)", example = "0") @RequestParam("page") Optional<Integer> page) {
         Pageable pageable = PageRequest.of(page.orElse(0), 30, Sort.by("rating").descending());
-        Map<List<ProductDTO>, Integer> listMap = productService.getAllProductsByStatusAndPaging(true,0, pageable);
+        Map<List<ProductDTO>, Integer> listMap = productService.getAllProductsByStatusAndPaging(true, 0, pageable);
         List<Object> list = new ArrayList<>();
         listMap.forEach((productDTOS, integer) -> {
             list.add(productDTOS);
@@ -339,6 +341,7 @@ public class ProductController {
             @PathVariable("id") Integer id,
             @RequestPart(value = "productDTO") String jsonString,
             @RequestPart(value = "mainImage", required = false) MultipartFile mainImage,
+            @RequestPart(value = "objects", required = false) String objects,
             @RequestPart(value = "subImages", required = false) MultipartFile[] subImages
     ) {
         Integer productId;
@@ -347,7 +350,8 @@ public class ProductController {
             ProductDTO productDTO = objectMapper.readValue(jsonString, ProductDTO.class);
 
             productDTO.setId(id);
-            if (mainImage != null){
+
+            if (mainImage != null) {
                 String fileNameMain = firebaseStorageService.uploadFile(mainImage);
                 String mainImgUrl = firebaseStorageService.getImageUrl(fileNameMain);
 
@@ -356,20 +360,33 @@ public class ProductController {
                 productDTO.setImageMain(productService.getProductById(id).getImageMain());
             }
 
-            productId = productService.saveProduct(productDTO);
-            if (productId != null) {
-                if (subImages != null) {
-                    productImageService.deleteImages(productId);
 
-                    String[] subImgUrls = new String[subImages.length];
-                    for (int i = 0; i < subImages.length; i++) {
-                        String fileNameSub = firebaseStorageService.uploadFile(subImages[i]);
-                        subImgUrls[i] = firebaseStorageService.getImageUrl(fileNameSub);
-                    }
-                    productImageService.saveImages(subImgUrls, productId);
+            if (objects != null) {
+                List<FileImageDTO> fileImageDTOList = objectMapper.readValue(objects, new TypeReference<>() {
+                });
+
+                if (fileImageDTOList.size() > 0) {
+                    List<Integer> uidList = fileImageDTOList.stream().map(FileImageDTO::getUid).toList();
+                    productImageService.updateImages(fileImageDTOList, uidList, id);
                 } else {
-                    productImageService.deleteImages(productId);
+                    productImageService.deleteImages(id);
                 }
+
+            } else {
+                productImageService.deleteImages(id);
+            }
+
+
+            productId = productService.saveProduct(productDTO);
+            if (productId != null && subImages != null) {
+                String[] subImgUrls = new String[subImages.length];
+                for (int i = 0; i < subImages.length; i++) {
+                    String fileNameSub = firebaseStorageService.uploadFile(subImages[i]);
+                    subImgUrls[i] = firebaseStorageService.getImageUrl(fileNameSub);
+                }
+                productImageService.saveImages(subImgUrls, productId);
+
+
             }
 
         } catch (IOException e) {
