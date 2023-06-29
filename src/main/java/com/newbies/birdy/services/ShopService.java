@@ -17,8 +17,9 @@ public interface ShopService {
 
     Map<List<ShopDTO>, Integer> listByNameAndStatusWithPaging(String name, Boolean status, Pageable pageable);
     
-
     String getShopAddress(Integer shopId);
 
     List<ShipmentDTO> listShipmentByShopId(Integer shopId, Boolean status);
+
+    ShopDTO getShopByPhoneNumber(String phoneNumber, Boolean status);
 }

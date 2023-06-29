@@ -5,6 +5,7 @@ import com.newbies.birdy.dto.OrderDetailDTO;
 import com.newbies.birdy.dto.OrderManageDTO;
 import com.newbies.birdy.entities.*;
 import com.newbies.birdy.exceptions.entity.EntityNotFoundException;
+import com.newbies.birdy.exceptions.entity.QuantityException;
 import com.newbies.birdy.mapper.OrderDetailMapper;
 import com.newbies.birdy.mapper.OrderMapper;
 import com.newbies.birdy.repositories.*;
@@ -297,11 +298,17 @@ public class OrderServiceImpl implements OrderService {
             Product product = productRepository.findById(orderDetailDTO.getProductId())
                     .orElseThrow(() -> new EntityNotFoundException("Product not found!"));
             if (product.getShopProduct().getId().equals(shopId)) {
+                int quantityLeft = product.getQuantity() - orderDetailDTO.getQuantity();
+                if(quantityLeft < 0) {
+                    throw new QuantityException("Product quantity not enough!");
+                }
                 OrderDetail orderDetail = OrderDetailMapper.INSTANCE.toEntity(orderDetailDTO);
                 orderDetail.setStatus(true);
                 orderDetail.setRating(0);
                 orderDetail.setOrder(order);
                 orderDetailRepository.save(orderDetail);
+                product.setQuantity(product.getQuantity() - orderDetail.getQuantity());
+                productRepository.save(product);
             }
         }
 
