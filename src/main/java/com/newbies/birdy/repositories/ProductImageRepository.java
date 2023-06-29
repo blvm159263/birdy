@@ -11,4 +11,6 @@ import java.util.List;
 public interface ProductImageRepository extends JpaRepository<ProductImage, Integer> {
 
     List<ProductImage> findByProductImgAndStatus(Product product, Boolean status);
+
+    List<ProductImage> findByProductImgAndIdNotIn(Product product, List<Integer> ids);
 }

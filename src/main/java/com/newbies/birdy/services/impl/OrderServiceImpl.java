@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Transactional
@@ -108,6 +109,7 @@ public class OrderServiceImpl implements OrderService {
         for (Order order : orderList.getContent()) {
             OrderManageDTO orderManageDTO = new OrderManageDTO();
             orderManageDTO.setId(order.getId());
+            orderManageDTO.setOrderDate(formatDate(order.getCreateDate()));
             orderManageDTO.setCustomer(order.getPaymentMethod().getUserPaymentMethod().getFullName());
 
             List<Double> listPrice = order.getOrderDetailList().stream().map(OrderDetail::getPrice).toList();
@@ -128,6 +130,10 @@ public class OrderServiceImpl implements OrderService {
         return pair;
     }
 
+    private String formatDate(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        return formatter.format(date);
+    }
     /*
     @Override
     public Map<List<OrderManageDTO>, Long> getAllOrderByShop(Integer shopId, String search, Pageable pageable) {

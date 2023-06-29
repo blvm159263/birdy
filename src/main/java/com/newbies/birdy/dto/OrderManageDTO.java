@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderManageDTO {
     private Integer id;
+    private String orderDate;
     private String customer;
     private String total;
     private String shipType;

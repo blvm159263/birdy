@@ -344,9 +344,9 @@ public class ShopController {
 
         Pageable pageable = null;
         if (sort.equals("asc")) {
-            pageable = PageRequest.of(page.orElse(0), 10, Sort.by("id").ascending());
+            pageable = PageRequest.of(page.orElse(0), 10, Sort.by("createDate").ascending());
         } else if (sort.equals("desc")) {
-            pageable = PageRequest.of(page.orElse(0), 10, Sort.by("id").descending());
+            pageable = PageRequest.of(page.orElse(0), 10, Sort.by("createDate").descending());
         }
         Map<List<OrderManageDTO>, Long> listMap = orderService
                 .getAllOrdersByShopId(shopId, search.orElse(""), payment.orElse(null), state.orElse(null), pageable);
