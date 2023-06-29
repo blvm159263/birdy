@@ -5,21 +5,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class WishlistDTO {
 
-    private String email;
-
+    private Integer userId;
     private String fullName;
+    private Integer productId;
+    private String productName;
+    private Date createDate;
+    private Boolean status;
 
-    private Date dob;
-
-    private Integer gender;
-
-    private String phoneNumber;
-
-    private String password;
 }

@@ -17,6 +17,7 @@ public interface UserMapper {
     @Mapping(target = "accountId", source = "accountUser.id")
     UserDTO toDTO(User user);
 
+    @Mapping(target = "wishlistList", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "paymentMethodList", ignore = true)
     @Mapping(target = "addressList", ignore = true)

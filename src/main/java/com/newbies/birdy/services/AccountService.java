@@ -6,5 +6,6 @@ public interface AccountService {
 
     AccountDTO getByPhoneNumber(String phoneNumber, Boolean status);
 
+    Boolean updatePassword(String phoneNumber, String password);
     AccountDTO getById(Integer id);
 }

@@ -1,9 +1,6 @@
 package com.newbies.birdy.controllers;
 
-import com.newbies.birdy.dto.AuthenticationRequest;
-import com.newbies.birdy.dto.AuthenticationResponse;
-import com.newbies.birdy.dto.RegisterRequest;
-import com.newbies.birdy.dto.UserDTO;
+import com.newbies.birdy.dto.*;
 import com.newbies.birdy.services.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,13 +31,29 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "201", description = "User created successfully!"),
             @ApiResponse(responseCode = "500", description = "Internal error")
     })
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest userInformationDTO){
+    @PostMapping("/user/register")
+    public ResponseEntity<?> registerUser(@RequestBody RegisterUserRequest userInformationDTO){
         UserDTO user = service.createUser(userInformationDTO);
         if(user != null){
             return new ResponseEntity<>("User created successfully!", HttpStatus.CREATED);
         }else{
             return new ResponseEntity<>("Creat user fail!",HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Operation(summary = "Create new shop")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Can't create Shop! Bad Request!"),
+            @ApiResponse(responseCode = "201", description = "shop created successfully!"),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @PostMapping("/shop/register")
+    public ResponseEntity<?> registerShop(@RequestBody RegisterShopRequest shopInformationDTO){
+        ShopDTO shop = service.createShop(shopInformationDTO);
+        if(shop != null){
+            return new ResponseEntity<>("Shop created successfully!", HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>("Creat shop fail!",HttpStatus.BAD_REQUEST);
         }
     }
 }

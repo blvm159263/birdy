@@ -85,9 +85,9 @@ public class OrderController {
             return new ResponseEntity<>("Can not find shop or address", HttpStatus.NOT_FOUND);
         }
         Double price = shipmentService.getShipmentPriceById(shipmentId, true);
-        Long distance = googleDistantMatrixService.getData(shopAddress, address);
+        Long distance =googleDistantMatrixService.getData(shopAddress, address);
         System.out.println(distance);
-        Double shipmentPrice = price * (distance / 1000);
+        Double shipmentPrice = price * distance / 1000;
         return ResponseEntity.ok(shipmentPrice);
     }
 

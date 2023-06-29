@@ -5,13 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShopDTO {
-
-    private Integer id;
+public class RegisterShopRequest {
 
     private String email;
 
@@ -19,15 +16,7 @@ public class ShopDTO {
 
     private String address;
 
-    private String avatarUrl;
-
-    private Date createDate;
-
-    private Integer accountId;
-
     private String phoneNumber;
 
-    private Integer totalProduct;
-
-    private String rating;
+    private String password;
 }

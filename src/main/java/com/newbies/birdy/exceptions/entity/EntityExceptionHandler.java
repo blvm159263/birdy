@@ -49,5 +49,16 @@ public class EntityExceptionHandler {
         return new ResponseEntity<>(exception, notFound);
     }
 
+    @ExceptionHandler(value = {QuantityException.class})
+    public ResponseEntity<Object> handleQuantityException(EntityNotFoundException e) {
+        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+        EntityException exception = new EntityException(
+                e.getMessage(),
+                badRequest,
+                ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"))
+        );
+        return new ResponseEntity<>(exception, badRequest);
+    }
+
 }
 

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReviewDTO {
     private String fullName;
+    private String avatarUrl;
     private Integer rating;
     private String comment;
 }

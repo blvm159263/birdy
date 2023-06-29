@@ -36,6 +36,7 @@ public class ReviewServiceImpl implements ReviewService {
         List<ReviewDTO> reviewList = new ArrayList<>();
         for (OrderDetail orderDetail : pageList) {
             reviewList.add(new ReviewDTO(orderDetail.getOrder().getPaymentMethod().getUserPaymentMethod().getFullName(),
+                    orderDetail.getOrder().getPaymentMethod().getUserPaymentMethod().getAvatarUrl(),
                             orderDetail.getRating(), orderDetail.getComment()));
         }
         pair.put(reviewList, pageList.getTotalElements());

@@ -71,4 +71,17 @@ public class AddressServiceImpl implements AddressService {
         return AddressMapper.INSTANCE.toDTO(addressRepository.findById(addressId)
                 .orElseThrow(() -> new EntityNotFoundException("Can not find address have id: " + addressId)));
     }
+
+    @Override
+    public Boolean updateAddress(AddressDTO address) {
+        if(address.getIsDefault()){
+            User user = userRepository.findById(address.getUserId())
+                    .orElseThrow(() -> new EntityNotFoundException("User not found"));
+            Address addressDefault = user.getAddressList().stream().filter(Address::getIsDefault).findFirst()
+                    .orElseThrow(() -> new EntityNotFoundException("Default address not found"));
+            addressDefault.setIsDefault(false);
+            addressRepository.save(addressDefault);
+        }
+        return addressRepository.save(AddressMapper.INSTANCE.toEntity(address)).getId() != null;
+    }
 }

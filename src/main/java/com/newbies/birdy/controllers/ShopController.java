@@ -62,6 +62,17 @@ public class ShopController {
         return ResponseEntity.ok(shopService.getShopById(id));
     }
 
+    @Operation(summary = "Get shop information by phoneNumber")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Not Found Shop", content = @Content(schema = @Schema(implementation = ObjectException.class))),
+            @ApiResponse(responseCode = "200", description = "Return Shop", content = @Content(schema = @Schema(implementation = ShopDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @GetMapping("/phone-number/{phoneNumber}")
+    public ResponseEntity<?> getShopByPhoneNumber(@PathVariable(name = "phoneNumber") String phoneNumber) {
+        return ResponseEntity.ok(shopService.getShopByPhoneNumber(phoneNumber, true));
+    }
+
     @Operation(summary = "Get shop detail by shop id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Not Found Shop", content = @Content(schema = @Schema(implementation = ObjectException.class))),

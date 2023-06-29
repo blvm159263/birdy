@@ -5,12 +5,16 @@ import com.newbies.birdy.dto.ProductsChartDTO;
 import com.newbies.birdy.dto.ShipmentDTO;
 import com.newbies.birdy.dto.ShopDTO;
 import com.newbies.birdy.entities.OrderState;
+import com.newbies.birdy.entities.Account;
 import com.newbies.birdy.entities.Shipment;
 import com.newbies.birdy.entities.Shop;
 import com.newbies.birdy.exceptions.entity.EntityNotFoundException;
 import com.newbies.birdy.mapper.ShipmentMapper;
 import com.newbies.birdy.mapper.ShopMapper;
 import com.newbies.birdy.repositories.*;
+import com.newbies.birdy.repositories.AccountRepository;
+import com.newbies.birdy.repositories.ShipmentRepository;
+import com.newbies.birdy.repositories.ShopRepository;
 import com.newbies.birdy.services.ShopService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +37,8 @@ public class ShopServiceImpl implements ShopService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final OrderRepository orderRepository;
+
+    private final AccountRepository accountRepository;
 
     @Override
     public List<ShopDTO> listByShopName(String name, Boolean status) {
@@ -159,5 +165,13 @@ public class ShopServiceImpl implements ShopService {
         shop.setShopName(shopName);
         shop.setAvatarUrl(ava);
         return shopRepository.save(shop).getId();
+    }
+
+    @Override
+    public ShopDTO getShopByPhoneNumber(String phoneNumber, Boolean status) {
+        Account account = accountRepository
+                .findByPhoneNumberAndStatus(phoneNumber, status)
+                .orElseThrow(() -> new EntityNotFoundException("Account not found!"));
+        return ShopMapper.INSTANCE.toDTO(account.getShop());
     }
 }

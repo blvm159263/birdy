@@ -1,6 +1,7 @@
 package com.newbies.birdy.controllers;
 
 import com.newbies.birdy.dto.AccountDTO;
+import com.newbies.birdy.dto.AuthenticationRequest;
 import com.newbies.birdy.exceptions.ObjectException;
 import com.newbies.birdy.services.AccountService;
 import com.newbies.birdy.services.UserService;
@@ -12,10 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Account API")
 @RestController
@@ -38,6 +36,17 @@ public class AccountController {
         AccountDTO accountDTO = accountService.getByPhoneNumber(phoneNumber, true);
 
         return ResponseEntity.ok(accountDTO!=null);
+    }
+
+    @Operation(summary = "Create new password")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Can't create address! Bad Request!", content = @Content(schema = @Schema(implementation = ObjectException.class))),
+            @ApiResponse(responseCode = "200", description = "Return true if success!"),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @PutMapping("/password")
+    public ResponseEntity<?> updatePassword(@RequestBody AuthenticationRequest authenticationRequest){
+        return ResponseEntity.ok(accountService.updatePassword(authenticationRequest.getPhoneNumber(), authenticationRequest.getPassword()));
     }
 
 
