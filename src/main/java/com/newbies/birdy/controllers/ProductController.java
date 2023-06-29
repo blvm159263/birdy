@@ -363,7 +363,7 @@ public class ProductController {
 
 
             if (objects != null) {
-                List<FileImageDTO> fileImageDTOList = objectMapper.readValue(jsonString, new TypeReference<>() {});
+                List<FileImageDTO> fileImageDTOList = objectMapper.readValue(objects, new TypeReference<>() {});
 
                 if (fileImageDTOList.size() > 0) {
                     List<Integer> uidList = fileImageDTOList.stream().map(FileImageDTO::getUid).toList();

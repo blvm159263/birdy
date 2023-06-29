@@ -65,4 +65,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     Long countByShopProductAndStateAndStatusAndCreateDateBetween(Shop shop, Integer state, Boolean status, Date start, Date end);
 
     Long countByShopProductAndStateAndStatusAndCreateDateBetweenAndCategory(Shop shop, Integer state, Boolean status, Date start, Date end, Category category);
+
+    // Admin
+    Page<Product> findByProductNameContainingIgnoreCaseAndStateAndStatus(String search, Integer state, Boolean status, Pageable pageable);
 }
