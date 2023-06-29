@@ -14,5 +14,5 @@ public interface AddressService {
 
     AddressDTO getAddressDTOById(Integer addressId);
 
-    Boolean updateAddress(Integer addressId, String address);
+    Boolean updateAddress(AddressDTO address);
 }
