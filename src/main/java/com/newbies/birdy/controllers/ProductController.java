@@ -372,7 +372,7 @@ public class ProductController {
     })
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable("id") Integer id) {
-        if (!productService.deleteProduct(id)) {
+        if (Boolean.FALSE.equals(productService.deleteProduct(id))) {
             return new ResponseEntity<>("Product deleted successfully", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Product deleted failed", HttpStatus.BAD_REQUEST);

@@ -2,7 +2,9 @@ package com.newbies.birdy.services.impl;
 
 import com.newbies.birdy.dto.ProductDTO;
 import com.newbies.birdy.entities.Product;
+import com.newbies.birdy.entities.ProductImage;
 import com.newbies.birdy.mapper.ProductMapper;
+import com.newbies.birdy.repositories.ProductImageRepository;
 import com.newbies.birdy.repositories.ProductRepository;
 import com.newbies.birdy.services.AdminService;
 import jakarta.transaction.Transactional;
@@ -21,6 +23,8 @@ import java.util.Map;
 public class AdminServiceImpl implements AdminService {
 
     private final ProductRepository productRepository;
+
+    private final ProductImageRepository productImageRepository;
 
     @Override
     public Map<List<ProductDTO>, Integer> getAllProductsForAdmin(String search, Pageable pageable) {
@@ -41,6 +45,8 @@ public class AdminServiceImpl implements AdminService {
     public Boolean declineProduct(Integer id) {
         try {
             Product product = productRepository.findById(id).orElseThrow();
+            List<ProductImage> images = productImageRepository.findByProductImgAndStatus(product, true);
+            productImageRepository.deleteAll(images);
             productRepository.delete(product);
             return true;
         } catch (Exception e) {

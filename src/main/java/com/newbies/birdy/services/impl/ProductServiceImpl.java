@@ -3,10 +3,12 @@ package com.newbies.birdy.services.impl;
 import com.newbies.birdy.dto.ProductDTO;
 import com.newbies.birdy.entities.Category;
 import com.newbies.birdy.entities.Product;
+import com.newbies.birdy.entities.ProductImage;
 import com.newbies.birdy.entities.Shop;
 import com.newbies.birdy.exceptions.entity.EntityNotFoundException;
 import com.newbies.birdy.mapper.ProductMapper;
 import com.newbies.birdy.repositories.CategoryRepository;
+import com.newbies.birdy.repositories.ProductImageRepository;
 import com.newbies.birdy.repositories.ProductRepository;
 import com.newbies.birdy.repositories.ShopRepository;
 import com.newbies.birdy.services.ProductService;
@@ -29,6 +31,8 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ShopRepository shopRepository;
+
+    private final ProductImageRepository productImageRepository;
 
 
     @Override
@@ -150,6 +154,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Boolean deleteProduct(Integer id) {
         Product product = productRepository.findByIdAndStatus(id, true).orElseThrow(() -> new EntityNotFoundException("Product ID doesn't exist"));
+        List<ProductImage> images = productImageRepository.findByProductImgAndStatus(product, true);
+        for (ProductImage image : images) {
+            image.setStatus(false);
+            productImageRepository.save(image);
+        }
         product.setStatus(false);
         return productRepository.save(product).getStatus();
     }
