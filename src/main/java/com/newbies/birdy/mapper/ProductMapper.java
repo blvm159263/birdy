@@ -20,6 +20,7 @@ public interface ProductMapper {
     @Mapping(target = "categoryId", source = "category.id")
     ProductDTO toDTO(Product product);
 
+    @Mapping(target = "reportList", ignore = true)
     @Mapping(target = "wishlistList", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "orderDetailList", ignore = true)

@@ -13,11 +13,14 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_wishlist")
-public class Wishlist {
+@Table(name = "tbl_report")
+public class Report {
 
     @EmbeddedId
-    private WishlistKey id;
+    private ReportKey id;
+
+    @Column(name = "reason",columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+    private String reason;
 
     @Column(name = "create_date")
     private Date createDate;
@@ -28,10 +31,10 @@ public class Wishlist {
     @ManyToOne
     @MapsId("id")
     @JoinColumn(name = "user_id")
-    private User userWishlist;
+    private User userReport;
 
     @ManyToOne
     @MapsId("id")
     @JoinColumn(name = "product_id")
-    private Product productWishlist;
+    private Product productReport;
 }

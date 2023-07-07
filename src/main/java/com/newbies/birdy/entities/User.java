@@ -61,4 +61,7 @@ public class User {
     @OneToMany(mappedBy = "userWishlist", fetch = FetchType.LAZY)
     private List<Wishlist> wishlistList;
 
+    @OneToMany(mappedBy = "userReport", fetch = FetchType.LAZY)
+    private List<Report> reportList;
+
 }

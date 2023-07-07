@@ -105,4 +105,7 @@ public class Product {
     @OneToMany(mappedBy = "productWishlist", fetch = FetchType.LAZY)
     private List<Wishlist> wishlistList;
 
+    @OneToMany(mappedBy = "productReport", fetch = FetchType.LAZY)
+    private List<Report> reportList;
+
 }

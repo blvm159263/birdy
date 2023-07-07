@@ -69,7 +69,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean updateUser(UserDTO userDTO) {
-        User user = UserMapper.INSTANCE.toEntity(userDTO);
+        User user = userRepository.findById(userDTO.getId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        user.setStatus(true);
+        user.setDob(userDTO.getDob());
+        user.setFullName(userDTO.getFullName());
+        user.setAvatarUrl(userDTO.getAvatarUrl());
+        user.setGender(userDTO.getGender());
         user.setStatus(true);
         return userRepository.save(user).getId() != null;
     }
