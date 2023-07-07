@@ -36,4 +36,15 @@ public class AdminServiceImpl implements AdminService {
         product.setState(1);
         return productRepository.save(product).getId();
     }
+
+    @Override
+    public Boolean declineProduct(Integer id) {
+        try {
+            Product product = productRepository.findById(id).orElseThrow();
+            productRepository.delete(product);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
