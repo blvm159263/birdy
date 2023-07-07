@@ -1,11 +1,8 @@
 package com.newbies.birdy.mapper;
 
 import com.newbies.birdy.dto.ReportDTO;
-import com.newbies.birdy.dto.WishlistDTO;
 import com.newbies.birdy.entities.Report;
 import com.newbies.birdy.entities.ReportKey;
-import com.newbies.birdy.entities.Wishlist;
-import com.newbies.birdy.entities.WishlistKey;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

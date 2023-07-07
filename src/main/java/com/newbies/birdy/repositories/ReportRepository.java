@@ -2,8 +2,6 @@ package com.newbies.birdy.repositories;
 
 import com.newbies.birdy.entities.Report;
 import com.newbies.birdy.entities.ReportKey;
-import com.newbies.birdy.entities.Wishlist;
-import com.newbies.birdy.entities.WishlistKey;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

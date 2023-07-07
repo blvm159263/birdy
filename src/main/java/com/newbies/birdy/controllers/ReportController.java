@@ -1,10 +1,8 @@
 package com.newbies.birdy.controllers;
 
 import com.newbies.birdy.dto.ReportDTO;
-import com.newbies.birdy.dto.WishlistDTO;
 import com.newbies.birdy.exceptions.ObjectException;
 import com.newbies.birdy.services.ReportService;
-import com.newbies.birdy.services.WishlistService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

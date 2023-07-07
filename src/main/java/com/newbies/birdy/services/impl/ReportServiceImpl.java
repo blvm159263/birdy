@@ -1,15 +1,14 @@
 package com.newbies.birdy.services.impl;
 
 import com.newbies.birdy.dto.ReportDTO;
-import com.newbies.birdy.dto.WishlistDTO;
-import com.newbies.birdy.entities.*;
+import com.newbies.birdy.entities.Product;
+import com.newbies.birdy.entities.Report;
+import com.newbies.birdy.entities.ReportKey;
+import com.newbies.birdy.entities.User;
 import com.newbies.birdy.exceptions.entity.EntityNotFoundException;
 import com.newbies.birdy.mapper.ReportMapper;
-import com.newbies.birdy.mapper.WishlistMapper;
 import com.newbies.birdy.repositories.ReportRepository;
-import com.newbies.birdy.repositories.WishlistRepository;
 import com.newbies.birdy.services.ReportService;
-import com.newbies.birdy.services.WishlistService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
