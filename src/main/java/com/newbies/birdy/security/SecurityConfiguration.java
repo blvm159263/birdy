@@ -37,7 +37,7 @@ public class SecurityConfiguration {
                 .requestMatchers("swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers("api/v1/**").permitAll()
                 .requestMatchers("api/v1/payment/momo-info").permitAll()
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
 
 //                 .requestMatchers("/api/admin/**").hasAnyAuthority("role_admin")
                 .and()
