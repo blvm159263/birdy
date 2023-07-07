@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newbies.birdy.dto.FileImageDTO;
 import com.newbies.birdy.dto.ProductDTO;
 import com.newbies.birdy.dto.ReviewDTO;
+import com.newbies.birdy.exceptions.entity.EntityNotFoundException;
+import com.newbies.birdy.services.*;
 import com.newbies.birdy.services.FirebaseStorageService;
 import com.newbies.birdy.services.ProductImageService;
 import com.newbies.birdy.services.ProductService;
@@ -41,6 +43,8 @@ public class ProductController {
     private final ProductService productService;
 
     private final ProductImageService productImageService;
+
+    private final ShopService shopService;
 
     private final FirebaseStorageService firebaseStorageService;
 
@@ -245,45 +249,6 @@ public class ProductController {
         }
     }
 
-//    @PostMapping(value = "/test", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<?> test(@RequestBody MultipartFile mainImage) {
-//        if (mainImage != null) {
-//            return ResponseEntity.ok(mainImage.getOriginalFilename());
-//        } else {
-//            return new ResponseEntity<>("No product found!!!", HttpStatus.NOT_FOUND);
-//        }
-////        MultipartFile mainImage = request;
-////        MultipartFile[] subImages = productRequestDTO.getSubImages();
-////        List<Object> list = new ArrayList<>(Arrays.asList(mainImage, subImages));return ResponseEntity.ok(request);
-//    }
-
-//    @PostMapping(value = "/test", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-//    public ResponseEntity<?> test(
-//            @RequestPart(value = "productDTO") String jsonString,
-//            @RequestPart(value = "mainImage") MultipartFile mainImage,
-//            @RequestPart(value = "subImages", required = false) MultipartFile[] subImages
-//    ) {
-//        try {
-//            if (mainImage != null && jsonString != null) {
-//                ObjectMapper objectMapper = new ObjectMapper();
-//                ProductDTO productDTO = objectMapper.readValue(jsonString, ProductDTO.class);
-//
-//                List<String> subImageFile = null;
-//                if (subImages != null) {
-//                    subImageFile = new ArrayList<>(Arrays.stream(subImages).map(MultipartFile::getOriginalFilename).toList());
-//                    List<Object> list = new ArrayList<>(Arrays.asList(mainImage.getOriginalFilename(), subImageFile, productDTO));
-//                    return ResponseEntity.ok(list);
-//                }
-//                else return ResponseEntity.ok("sub image null");
-//
-//            }
-//            return new ResponseEntity<>("product inserted failed", HttpStatus.NOT_FOUND);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
-
     @Operation(summary = "Create new product")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Product created"),
@@ -305,6 +270,9 @@ public class ProductController {
             ObjectMapper objectMapper = new ObjectMapper();
             ProductDTO productDTO = objectMapper.readValue(jsonString, ProductDTO.class);
             productDTO.setImageMain(mainImgUrl);
+            productDTO.setState(0);
+            productDTO.setRating(0);
+            productDTO.setShopName(shopService.getShopById(productDTO.getShopId()).getShopName());
 
             productId = productService.saveProduct(productDTO);
             if (productId != null && subImages != null) {

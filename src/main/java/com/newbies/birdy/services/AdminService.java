@@ -10,4 +10,6 @@ public interface AdminService {
     Map<List<ProductDTO>, Integer> getAllProductsForAdmin(String search, Pageable pageable);
 
     Integer approveProduct(Integer id);
+
+    Boolean declineProduct(Integer id);
 }

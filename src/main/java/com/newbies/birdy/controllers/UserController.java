@@ -1,9 +1,11 @@
 package com.newbies.birdy.controllers;
 
 import com.newbies.birdy.dto.AddressDTO;
+import com.newbies.birdy.dto.ReportDTO;
 import com.newbies.birdy.dto.UserDTO;
 import com.newbies.birdy.exceptions.ObjectException;
 import com.newbies.birdy.services.AddressService;
+import com.newbies.birdy.services.ReportService;
 import com.newbies.birdy.services.UserService;
 import com.newbies.birdy.services.WishlistService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,9 +34,11 @@ public class UserController  {
 
     private final WishlistService wishlistService;
 
+    private final ReportService reportService;
+
     @Operation(summary = "Add product to Wishlist")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "400", description = "Can't create address! Bad Request!", content = @Content(schema = @Schema(implementation = ObjectException.class))),
+            @ApiResponse(responseCode = "400", description = "Can't create wihlist! Bad Request!", content = @Content(schema = @Schema(implementation = ObjectException.class))),
             @ApiResponse(responseCode = "201", description = "Created successfully! "),
             @ApiResponse(responseCode = "500", description = "Internal error")
     })
@@ -47,6 +51,34 @@ public class UserController  {
         }else{
             return ResponseEntity.status(HttpStatus.CREATED).body("Created successfully!");
         }
+    }
+
+    @Operation(summary = "Add product to Report")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Can't create report! Bad Request!", content = @Content(schema = @Schema(implementation = ObjectException.class))),
+            @ApiResponse(responseCode = "201", description = "Created successfully! "),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @PostMapping("/report")
+    public ResponseEntity<?> addReport(@RequestBody ReportDTO reportDTO){
+        Boolean status = reportService.addReport(reportDTO.getUserId(), reportDTO.getProductId(), reportDTO.getReason());
+        if(!status){
+            return ResponseEntity.badRequest().body("Can't create report!");
+        }else{
+            return ResponseEntity.status(HttpStatus.CREATED).body("Created successfully!");
+        }
+    }
+
+    @Operation(summary = "Get product to Report")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Not found!", content = @Content(schema = @Schema(implementation = ObjectException.class))),
+            @ApiResponse(responseCode = "200", description = "return successfully! "),
+            @ApiResponse(responseCode = "500", description = "Internal error")
+    })
+    @GetMapping("/{user-id}/product/{product-id}/report")
+    public ResponseEntity<?> getReport(@PathVariable(name = "user-id") Integer userId,
+                                       @PathVariable(name = "product-id") Integer productId){
+        return ResponseEntity.ok(reportService.getReport(userId, productId));
     }
 
     @Operation(summary = "Delete product to Wishlist")
