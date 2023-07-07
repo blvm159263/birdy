@@ -14,4 +14,5 @@ public interface FirebaseStorageService {
 
     String getImageUrl(String name);
 
+    void deleteFile(String fileName) throws IOException;
 }

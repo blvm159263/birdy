@@ -1,6 +1,7 @@
 package com.newbies.birdy.controllers;
 
 import com.newbies.birdy.dto.ProductDTO;
+import com.newbies.birdy.dto.ShopDTO;
 import com.newbies.birdy.services.*;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,6 +27,12 @@ public class AdminController {
 
     private final AdminService adminService;
 
+    private final ProductService productService;
+
+    private final ShopService shopService;
+
+    private final EmailService emailService;
+
     @GetMapping("/products")
     public ResponseEntity<?> getAllProducts(
             @RequestParam(name = "search") Optional<String> search,
@@ -50,16 +57,22 @@ public class AdminController {
         Integer id = adminService.approveProduct(productId);
         if (id == null) {
             return new ResponseEntity<>("Failed!!!", HttpStatus.CONFLICT);
-        }
-        else return new ResponseEntity<>("Success!!!", HttpStatus.OK);
+        } else return new ResponseEntity<>("Success!!!", HttpStatus.OK);
     }
 
     @GetMapping("/product/{product-id}/decline")
     public ResponseEntity<?> declineProduct(@PathVariable("product-id") Integer productId) {
+        ProductDTO productDTO = productService.getProductById(productId);
+        ShopDTO shopDTO = shopService.getShopById(productDTO.getShopId());
         Boolean del = adminService.declineProduct(productId);
         if (Boolean.FALSE.equals(del)) {
             return new ResponseEntity<>("Failed!!!", HttpStatus.CONFLICT);
+        } else {
+            emailService.sendSimpleEmail(
+                    shopDTO.getEmail(),
+                    "Reject Product",
+                    "Your product has been rejected by admin. Please check your product and resubmit it.");
+            return new ResponseEntity<>("Success!!!", HttpStatus.OK);
         }
-        else return new ResponseEntity<>("Success!!!", HttpStatus.OK);
     }
 }

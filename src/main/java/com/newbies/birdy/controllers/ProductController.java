@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.newbies.birdy.dto.FileImageDTO;
 import com.newbies.birdy.dto.ProductDTO;
 import com.newbies.birdy.dto.ReviewDTO;
+import com.newbies.birdy.dto.ShopDTO;
 import com.newbies.birdy.exceptions.entity.EntityNotFoundException;
 import com.newbies.birdy.services.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,6 +46,7 @@ public class ProductController {
     private final FirebaseStorageService firebaseStorageService;
 
     private final ReviewService reviewService;
+    private final EmailService emailService;
 
     @Operation(summary = "Get first 15 available products for landing page")
     @ApiResponses(value = {

@@ -78,6 +78,17 @@ public class FirebaseStorageServiceImpl implements FirebaseStorageService {
         return  objectName;
     }
 
+    @Override
+    public void deleteFile(String fileName) {
+        Storage storage = storageOptions.getService();
+        BlobId blobId = BlobId.of(bucketName, fileName);
+        boolean deleted = storage.delete(blobId);
+        if (deleted) {
+            log.info("File {} deleted successfully.", fileName);
+        } else {
+            log.warn("Failed to delete file {}", fileName);
+        }
+    }
 
     @Override
     public ResponseEntity<Object> downloadFile(String fileName, HttpServletRequest request) throws Exception {
